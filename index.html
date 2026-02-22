@@ -213,6 +213,7 @@
     .stat-val.blue    { color:#6aaeff; }
     .stat-val.white   { color:var(--text); }
     .stat-val.teal    { color:var(--accent2); }
+    .stat-val.muted   { color:var(--muted); font-size:0.78rem; }
     .stat-val.pending { color:var(--muted); font-size:0.78rem; animation:pulse 1.5s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
 
@@ -371,8 +372,10 @@
 
   async function workerFetch(params, signal) {
     const res = await fetch(WORKER_URL+'?'+new URLSearchParams(params), { signal });
-    if (!res.ok) throw new Error(`Worker ${res.status}`);
-    return res.json();
+    let data;
+    try { data = await res.json(); } catch { throw new Error(`Worker ${res.status}`); }
+    if (data.error) throw new Error(data.error);
+    return data;
   }
 
   const escHtml = s => (s||'').replace(/[<>"'&]/g, c =>
@@ -419,7 +422,6 @@
 
     try {
       const data = await workerFetch({ action: 'lookup-place', placeId });
-      if (data.error) throw new Error(data.error);
       const g = data.game;
 
       const thumbWrap = document.getElementById('lookupThumbWrap');
@@ -427,18 +429,18 @@
         ? `<img class="lookup-thumb" src="${escHtml(g.iconUrl)}" alt="${escHtml(g.name)}"/>`
         : `<div class="lookup-thumb-placeholder">NO IMG</div>`;
 
-      document.getElementById('lookupName').textContent = g.name;
-      document.getElementById('lsPlaying').textContent  = fmtStat(g.playerCount);
-      document.getElementById('lsVisits').textContent   = fmtStat(g.visits);
-      document.getElementById('lsFavs').textContent     = fmtStat(g.favorites);
-      document.getElementById('lsLikes').textContent    = fmtStat(g.likes);
-      document.getElementById('lsDislikes').textContent = fmtStat(g.dislikes);
-      document.getElementById('lsRatio').textContent    = g.likeRatio != null ? g.likeRatio+'%' : '—';
-      document.getElementById('lookupOpenBtn').onclick  = () => window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank');
+      document.getElementById('lookupName').textContent     = g.name;
+      document.getElementById('lsPlaying').textContent      = fmtStat(g.playerCount);
+      document.getElementById('lsVisits').textContent       = fmtStat(g.visits);
+      document.getElementById('lsFavs').textContent         = fmtStat(g.favorites);
+      document.getElementById('lsLikes').textContent        = fmtStat(g.likes);
+      document.getElementById('lsDislikes').textContent     = fmtStat(g.dislikes);
+      document.getElementById('lsRatio').textContent        = g.likeRatio != null ? g.likeRatio+'%' : 'N/A';
+      document.getElementById('lookupOpenBtn').onclick      = () => window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank');
 
       resEl.classList.add('visible');
     } catch(err) {
-      errEl.textContent = `Error: ${err.message}`;
+      errEl.textContent = err.message;
       errEl.classList.add('visible');
     } finally {
       loadEl.classList.remove('visible');
@@ -463,12 +465,18 @@
 
     const name   = escHtml(g.name || 'Unknown');
     const detail = detailCache[g.placeId];
-    const loaded = !!detail;
+    const loaded = detail !== undefined && detail !== null;
 
     const sv = (field, cls, suffix='') => {
-      const val = loaded ? detail[field] : null;
-      const display = val != null ? (suffix ? val+suffix : fmtStat(val)) : '…';
-      return `<div class="stat-val ${loaded ? cls : 'pending'}" data-field="${field}">${display}</div>`;
+      if (!loaded) {
+        return `<div class="stat-val pending" data-field="${field}">…</div>`;
+      }
+      const val = detail[field];
+      if (val == null) {
+        return `<div class="stat-val muted" data-field="${field}">—</div>`;
+      }
+      const display = suffix ? val + suffix : fmtStat(val);
+      return `<div class="stat-val ${cls}" data-field="${field}">${display}</div>`;
     };
 
     card.innerHTML = `
@@ -501,10 +509,14 @@
       [['visits','blue'],['favorites','teal'],['likeRatio','white']].forEach(([field, cls]) => {
         const el = card.querySelector(`[data-field="${field}"]`);
         if (!el) return;
-        el.textContent = field === 'likeRatio'
-          ? (d[field] != null ? d[field]+'%' : '—')
-          : fmtStat(d[field]);
-        el.className = `stat-val ${cls}`;
+        const val = d[field];
+        if (val == null) {
+          el.textContent = '—';
+          el.className   = 'stat-val muted';
+        } else {
+          el.textContent = field === 'likeRatio' ? val + '%' : fmtStat(val);
+          el.className   = `stat-val ${cls}`;
+        }
       });
     });
   }
@@ -672,7 +684,7 @@
     try {
       const data = await workerFetch({ action: 'get-sort-content', sortId: sortName });
       allGames = data.games || [];
-      if (!allGames.length) throw new Error('No games returned from Rolimons');
+      if (!allGames.length) throw new Error('No games returned from data source');
 
       document.getElementById('searchInput').value = '';
       document.getElementById('searchClear').classList.remove('visible');
