@@ -57,15 +57,16 @@
     .logo { font-family:'Bebas Neue',sans-serif; font-size:1.55rem; letter-spacing:3px; color:var(--text); }
     .logo em { color:var(--accent); font-style:normal; }
 
-    .header-center { flex:1; max-width:420px; margin:0 40px; }
-    .search-wrap   { position:relative; display:flex; align-items:center; }
+    .header-center { flex:1; max-width:520px; margin:0 40px; }
+    .search-wrap   { position:relative; display:flex; align-items:center; gap:6px; }
 
-    .search-icon { position:absolute; left:12px; color:var(--muted); font-size:0.9rem; pointer-events:none; line-height:1; }
+    .search-input-wrap { position:relative; flex:1; }
+    .search-icon { position:absolute; left:12px; color:var(--muted); font-size:0.9rem; pointer-events:none; line-height:1; top:50%; transform:translateY(-50%); }
 
     #searchInput {
       width:100%; background:var(--surface);
       border:1px solid var(--border); border-radius:6px;
-      padding:8px 12px 8px 36px;
+      padding:8px 32px 8px 36px;
       color:var(--text); font-family:'Barlow',sans-serif;
       font-size:0.85rem; font-weight:500;
       outline:none; transition: border-color 0.15s, box-shadow 0.15s;
@@ -74,11 +75,23 @@
     #searchInput:focus { border-color:rgba(79,142,247,0.5); box-shadow: 0 0 0 3px rgba(79,142,247,0.08); }
 
     .search-clear {
-      position:absolute; right:10px; background:none; border:none; color:var(--muted);
+      position:absolute; right:10px; top:50%; transform:translateY(-50%);
+      background:none; border:none; color:var(--muted);
       cursor:pointer; font-size:0.9rem; padding:2px 4px; display:none; line-height:1; transition:color 0.15s;
     }
     .search-clear:hover { color:var(--text); }
     .search-clear.visible { display:block; }
+
+    /* Place ID lookup button */
+    #lookupBtn {
+      flex-shrink:0;
+      background:rgba(79,142,247,0.12); border:1px solid rgba(79,142,247,0.35); color:var(--accent);
+      font-family:'JetBrains Mono',monospace; font-size:0.65rem; font-weight:500;
+      letter-spacing:0.5px; padding:8px 14px; border-radius:6px;
+      cursor:pointer; transition:all 0.15s; white-space:nowrap;
+    }
+    #lookupBtn:hover { background:rgba(79,142,247,0.22); border-color:var(--accent); }
+    #lookupBtn:disabled { opacity:0.4; cursor:not-allowed; }
 
     .header-right { display:flex; align-items:center; gap:10px; }
 
@@ -99,32 +112,122 @@
     .refresh-btn:hover { border-color:var(--accent); color:var(--accent); }
     .refresh-btn:disabled { opacity:0.4; cursor:not-allowed; }
 
+    /* ── LOOKUP MODAL ── */
+    .modal-overlay {
+      position:fixed; inset:0; z-index:500;
+      background:rgba(0,0,0,0.7); backdrop-filter:blur(8px);
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; pointer-events:none; transition:opacity 0.2s;
+    }
+    .modal-overlay.open { opacity:1; pointer-events:all; }
+
+    .modal {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:10px; padding:32px; width:100%; max-width:460px;
+      transform:translateY(12px); transition:transform 0.2s;
+      position:relative;
+    }
+    .modal-overlay.open .modal { transform:translateY(0); }
+
+    .modal-title {
+      font-family:'Bebas Neue',sans-serif; font-size:1.6rem; letter-spacing:2px;
+      color:var(--text); margin-bottom:6px;
+    }
+    .modal-sub {
+      font-family:'JetBrains Mono',monospace; font-size:0.62rem; color:var(--muted);
+      letter-spacing:1px; margin-bottom:22px; line-height:1.6;
+    }
+
+    .modal-input-row { display:flex; gap:8px; margin-bottom:16px; }
+
+    #placeIdInput {
+      flex:1; background:var(--bg); border:1px solid var(--border); border-radius:6px;
+      padding:10px 14px; color:var(--text); font-family:'JetBrains Mono',monospace;
+      font-size:0.85rem; outline:none; transition:border-color 0.15s, box-shadow 0.15s;
+    }
+    #placeIdInput::placeholder { color:var(--muted); }
+    #placeIdInput:focus { border-color:rgba(79,142,247,0.5); box-shadow:0 0 0 3px rgba(79,142,247,0.08); }
+
+    #placeIdSubmit {
+      background:var(--accent); border:none; color:#fff;
+      font-family:'Barlow',sans-serif; font-size:0.85rem; font-weight:700;
+      padding:10px 20px; border-radius:6px; cursor:pointer; transition:opacity 0.15s;
+      white-space:nowrap;
+    }
+    #placeIdSubmit:hover { opacity:0.85; }
+    #placeIdSubmit:disabled { opacity:0.4; cursor:not-allowed; }
+
+    .modal-hint {
+      font-family:'JetBrains Mono',monospace; font-size:0.58rem; color:var(--muted);
+      letter-spacing:0.5px; margin-bottom:20px; line-height:1.7;
+    }
+    .modal-hint code { color:var(--accent2); background:rgba(56,232,198,0.08); padding:1px 5px; border-radius:3px; }
+
+    /* lookup result card inside modal */
+    .lookup-result {
+      background:var(--bg); border:1px solid var(--border); border-radius:8px;
+      overflow:hidden; display:none;
+    }
+    .lookup-result.visible { display:block; }
+
+    .lookup-result-inner {
+      display:flex; gap:0; align-items:stretch;
+    }
+    .lookup-thumb {
+      width:100px; height:100px; object-fit:cover; flex-shrink:0; display:block;
+    }
+    .lookup-thumb-placeholder {
+      width:100px; height:100px; background:var(--surface);
+      display:flex; align-items:center; justify-content:center;
+      font-family:'JetBrains Mono',monospace; font-size:0.5rem; color:var(--muted);
+    }
+    .lookup-info { padding:14px 16px; flex:1; min-width:0; }
+    .lookup-name {
+      font-family:'Barlow Condensed',sans-serif; font-size:1.05rem; font-weight:700;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:8px;
+    }
+    .lookup-stats { display:flex; gap:12px; flex-wrap:wrap; }
+    .lookup-stat { font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:var(--muted); }
+    .lookup-stat span { color:var(--text); font-weight:600; display:block; font-size:0.82rem; font-family:'Barlow Condensed',sans-serif; }
+
+    .lookup-open-btn {
+      display:block; width:100%;
+      background:rgba(79,142,247,0.1); border:none; border-top:1px solid var(--border);
+      color:var(--accent); font-family:'Barlow',sans-serif; font-size:0.8rem; font-weight:600;
+      padding:10px; cursor:pointer; transition:background 0.15s;
+    }
+    .lookup-open-btn:hover { background:rgba(79,142,247,0.2); }
+
+    .lookup-error {
+      font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:#ff6b6b;
+      background:rgba(255,107,107,0.08); border:1px solid rgba(255,107,107,0.2);
+      border-radius:5px; padding:10px 14px; display:none;
+    }
+    .lookup-error.visible { display:block; }
+
+    .lookup-loading {
+      font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--muted);
+      text-align:center; padding:16px; display:none;
+    }
+    .lookup-loading.visible { display:block; }
+
+    .modal-close {
+      position:absolute; top:16px; right:16px;
+      background:none; border:none; color:var(--muted); font-size:1.1rem;
+      cursor:pointer; transition:color 0.15s; line-height:1; padding:4px;
+    }
+    .modal-close:hover { color:var(--text); }
+
     /* ── HERO ── */
     .hero { position:relative; z-index:1; padding:72px 48px 36px; max-width:1500px; margin:0 auto; }
-
-    .hero-eyebrow {
-      font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--accent);
-      letter-spacing:3px; text-transform:uppercase; margin-bottom:14px;
-      opacity:0; animation:up 0.5s ease 0.05s both;
-    }
-    .hero h1 {
-      font-family:'Bebas Neue',sans-serif; font-size:clamp(3.8rem,8.5vw,7.5rem);
-      line-height:0.9; letter-spacing:3px; margin-bottom:22px;
-      opacity:0; animation:up 0.5s ease 0.1s both;
-    }
+    .hero-eyebrow { font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--accent); letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; opacity:0; animation:up 0.5s ease 0.05s both; }
+    .hero h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(3.8rem,8.5vw,7.5rem); line-height:0.9; letter-spacing:3px; margin-bottom:22px; opacity:0; animation:up 0.5s ease 0.1s both; }
     .hero h1 .bright { color:var(--accent); }
-    .hero-sub {
-      color:var(--muted); font-size:0.92rem; font-weight:500; max-width:420px; line-height:1.75;
-      opacity:0; animation:up 0.5s ease 0.15s both;
-    }
+    .hero-sub { color:var(--muted); font-size:0.92rem; font-weight:500; max-width:420px; line-height:1.75; opacity:0; animation:up 0.5s ease 0.15s both; }
     @keyframes up { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 
     /* ── STATS BAR ── */
-    .stats-bar {
-      position:relative; z-index:1; max-width:1500px; margin:0 auto;
-      padding:0 48px 30px; display:flex; gap:2px;
-      opacity:0; animation:up 0.5s ease 0.2s both;
-    }
+    .stats-bar { position:relative; z-index:1; max-width:1500px; margin:0 auto; padding:0 48px 30px; display:flex; gap:2px; opacity:0; animation:up 0.5s ease 0.2s both; }
     .stat-pill { background:var(--surface); border:1px solid var(--border); padding:11px 22px; }
     .stat-pill:first-child { border-radius:6px 0 0 6px; }
     .stat-pill:last-child  { border-radius:0 6px 6px 0; }
@@ -132,48 +235,24 @@
     .stat-pill-val   { font-family:'Barlow Condensed',sans-serif; font-size:1.25rem; font-weight:700; color:var(--text); letter-spacing:1px; }
 
     /* ── TOOLBAR ── */
-    .toolbar {
-      position:relative; z-index:1; max-width:1500px; margin:0 auto;
-      padding:0 48px 24px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;
-      opacity:0; animation:up 0.5s ease 0.25s both;
-    }
+    .toolbar { position:relative; z-index:1; max-width:1500px; margin:0 auto; padding:0 48px 24px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; opacity:0; animation:up 0.5s ease 0.25s both; }
     .toolbar-label { font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:0.6rem; letter-spacing:1.5px; text-transform:uppercase; margin-right:6px; }
-    .sort-btn {
-      background:var(--surface); border:1px solid var(--border); color:var(--muted);
-      font-family:'Barlow',sans-serif; font-size:0.78rem; font-weight:600; letter-spacing:0.3px;
-      padding:7px 18px; border-radius:4px; cursor:pointer; transition:all 0.15s;
-    }
+    .sort-btn { background:var(--surface); border:1px solid var(--border); color:var(--muted); font-family:'Barlow',sans-serif; font-size:0.78rem; font-weight:600; letter-spacing:0.3px; padding:7px 18px; border-radius:4px; cursor:pointer; transition:all 0.15s; }
     .sort-btn:hover { border-color:rgba(79,142,247,0.45); color:var(--text); }
     .sort-btn.active { background:rgba(79,142,247,0.15); border-color:var(--accent); color:var(--accent); }
-
     .result-count { margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:0.62rem; color:var(--muted); letter-spacing:1px; }
 
     /* ── GRID ── */
     .grid-wrap { position:relative; z-index:1; max-width:1500px; margin:0 auto; padding:0 48px 32px; }
-
-    .grid {
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap:1px; background:var(--border); border:1px solid var(--border);
-      border-radius:8px; overflow:hidden;
-    }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
 
     /* ── CARD ── */
     .card { background:var(--card-bg); cursor:pointer; position:relative; transition:background 0.15s; }
     .card:hover { background:#0f1220; }
-    .card::before {
-      content:''; position:absolute; top:0; left:0; right:0; height:2px; z-index:3;
-      background:linear-gradient(90deg,var(--accent),var(--accent2)); opacity:0; transition:opacity 0.2s;
-    }
+    .card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; z-index:3; background:linear-gradient(90deg,var(--accent),var(--accent2)); opacity:0; transition:opacity 0.2s; }
     .card:hover::before { opacity:1; }
 
-    .card-rank {
-      position:absolute; top:8px; left:8px; z-index:2;
-      font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:1px;
-      padding:2px 8px; border-radius:3px;
-      background:rgba(7,8,15,0.75); backdrop-filter:blur(6px);
-      border:1px solid rgba(255,255,255,0.12); color:var(--text); line-height:1.4;
-    }
+    .card-rank { position:absolute; top:8px; left:8px; z-index:2; font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:1px; padding:2px 8px; border-radius:3px; background:rgba(7,8,15,0.75); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.12); color:var(--text); line-height:1.4; }
 
     .card-thumb-wrap { position:relative; overflow:hidden; background:var(--surface); }
     .card-thumb { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; transition:transform 0.35s ease; }
@@ -182,7 +261,6 @@
 
     .card-body { padding:12px 14px 14px; }
     .card-name { font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; letter-spacing:0.3px; line-height:1.25; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
     .card-stats { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
     .stat { background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.045); border-radius:3px; padding:7px 9px; }
     .stat-label { font-family:'JetBrains Mono',monospace; font-size:0.5rem; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:1px; }
@@ -194,53 +272,27 @@
     .stat-val.pending { color:var(--muted); font-size:0.78rem; }
 
     /* ── PAGINATION ── */
-    .pagination {
-      position:relative; z-index:1; max-width:1500px; margin:0 auto;
-      padding:0 48px 80px;
-      display:flex; align-items:center; justify-content:center; gap:4px; flex-wrap:wrap;
-    }
-
-    .page-btn {
-      min-width:38px; height:38px; padding:0 10px;
-      background:var(--surface); border:1px solid var(--border); color:var(--muted);
-      font-family:'JetBrains Mono',monospace; font-size:0.72rem; font-weight:500;
-      border-radius:4px; cursor:pointer; transition:all 0.12s;
-      display:flex; align-items:center; justify-content:center;
-    }
+    .pagination { position:relative; z-index:1; max-width:1500px; margin:0 auto; padding:0 48px 80px; display:flex; align-items:center; justify-content:center; gap:4px; flex-wrap:wrap; }
+    .page-btn { min-width:38px; height:38px; padding:0 10px; background:var(--surface); border:1px solid var(--border); color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.72rem; border-radius:4px; cursor:pointer; transition:all 0.12s; display:flex; align-items:center; justify-content:center; }
     .page-btn:hover:not(:disabled) { border-color:rgba(79,142,247,0.5); color:var(--text); }
     .page-btn.active { background:rgba(79,142,247,0.18); border-color:var(--accent); color:var(--accent); font-weight:700; }
     .page-btn:disabled { opacity:0.25; cursor:not-allowed; }
-    .page-btn.arrow { font-size:0.85rem; }
-    .page-ellipsis {
-      min-width:38px; height:38px;
-      display:flex; align-items:center; justify-content:center;
-      color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.72rem;
-      user-select:none;
-    }
+    .page-ellipsis { min-width:38px; height:38px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.72rem; user-select:none; }
 
     /* ── SKELETON ── */
     .skeleton { background:var(--card-bg); }
     .skel-thumb { width:100%; aspect-ratio:1/1; background:var(--surface); }
     .skel-body  { padding:12px 14px 14px; }
-    .skel-line  {
-      height:7px; border-radius:2px; margin-bottom:7px;
-      background:linear-gradient(90deg,var(--border) 25%,#1e2640 50%,var(--border) 75%);
-      background-size:200% 100%; animation:shimmer 1.5s infinite;
-    }
+    .skel-line  { height:7px; border-radius:2px; margin-bottom:7px; background:linear-gradient(90deg,var(--border) 25%,#1e2640 50%,var(--border) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; }
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
     .no-results { grid-column:1/-1; text-align:center; padding:80px 20px; color:var(--muted); }
     .no-results h3 { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:2px; color:var(--text); margin-bottom:8px; }
-
     .error-box { grid-column:1/-1; text-align:center; padding:80px 20px; color:var(--muted); }
     .error-box h2 { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:2px; color:var(--text); margin-bottom:8px; }
     .error-box pre { margin:12px auto 0; font-family:'JetBrains Mono',monospace; font-size:0.7rem; background:var(--surface); border:1px solid var(--border); padding:12px; border-radius:4px; max-width:500px; overflow-x:auto; white-space:pre-wrap; }
 
-    footer {
-      position:relative; z-index:1; border-top:1px solid var(--border);
-      padding:18px 48px; text-align:center; color:var(--muted);
-      font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:1px;
-    }
+    footer { position:relative; z-index:1; border-top:1px solid var(--border); padding:18px 48px; text-align:center; color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:1px; }
 
     ::-webkit-scrollbar { width:5px; }
     ::-webkit-scrollbar-track { background:var(--bg); }
@@ -249,7 +301,7 @@
     @media(max-width:640px) {
       header { padding:0 16px; flex-wrap:wrap; height:auto; gap:10px; padding-top:10px; padding-bottom:10px; }
       .header-center { max-width:100%; margin:0; order:3; width:100%; }
-      .hero, .stats-bar, .toolbar, .grid-wrap, .pagination { padding-left:16px; padding-right:16px; }
+      .hero,.stats-bar,.toolbar,.grid-wrap,.pagination { padding-left:16px; padding-right:16px; }
       .hero h1 { font-size:3.2rem; }
       .grid { grid-template-columns:repeat(2,1fr); }
       .page-btn { min-width:34px; height:34px; font-size:0.65rem; }
@@ -264,9 +316,12 @@
   <div class="logo">Roblox<em>Charts</em></div>
   <div class="header-center">
     <div class="search-wrap">
-      <span class="search-icon">⌕</span>
-      <input type="text" id="searchInput" placeholder="Search games…" autocomplete="off" spellcheck="false"/>
-      <button class="search-clear" id="searchClear" title="Clear">✕</button>
+      <div class="search-input-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="searchInput" placeholder="Search games by name…" autocomplete="off" spellcheck="false"/>
+        <button class="search-clear" id="searchClear" title="Clear">✕</button>
+      </div>
+      <button id="lookupBtn" title="Look up any game by Place ID">🔍 Place ID</button>
     </div>
   </div>
   <div class="header-right">
@@ -274,6 +329,45 @@
     <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
   </div>
 </header>
+
+<!-- Place ID Lookup Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-title">Place ID Lookup</div>
+    <div class="modal-sub">Find any Roblox game — even if it's not in the charts</div>
+
+    <div class="modal-input-row">
+      <input type="text" id="placeIdInput" placeholder="Enter Place ID or paste Roblox URL…" autocomplete="off"/>
+      <button id="placeIdSubmit">Look Up</button>
+    </div>
+
+    <div class="modal-hint">
+      Find the ID in the URL: roblox.com/games/<code>286090429</code>/game-name<br/>
+      Or just paste the full URL and it'll extract the ID automatically.
+    </div>
+
+    <div class="lookup-loading" id="lookupLoading">Fetching game data…</div>
+    <div class="lookup-error"  id="lookupError"></div>
+
+    <div class="lookup-result" id="lookupResult">
+      <div class="lookup-result-inner">
+        <div id="lookupThumbWrap"></div>
+        <div class="lookup-info">
+          <div class="lookup-name" id="lookupName"></div>
+          <div class="lookup-stats">
+            <div class="lookup-stat">Playing<span id="lsPlaying">—</span></div>
+            <div class="lookup-stat">Visits<span id="lsVisits">—</span></div>
+            <div class="lookup-stat">Likes<span id="lsLikes">—</span></div>
+            <div class="lookup-stat">Favorites<span id="lsFavs">—</span></div>
+            <div class="lookup-stat">Like Ratio<span id="lsRatio">—</span></div>
+          </div>
+        </div>
+      </div>
+      <button class="lookup-open-btn" id="lookupOpenBtn">Open on Roblox →</button>
+    </div>
+  </div>
+</div>
 
 <section class="hero">
   <div class="hero-eyebrow">Real-time leaderboard</div>
@@ -316,7 +410,7 @@
   let detailCache  = {};
   let detailAbort  = null;
 
-  // ── FORMAT ──────────────────────────────────────────────
+  // ── FORMAT ───────────────────────────────────────────────
   function fmt(n) {
     if (n == null) return null;
     n = Number(n);
@@ -348,6 +442,105 @@
   const escHtml = s => (s||'').replace(/[<>"'&]/g, c =>
     ({ '<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;' }[c])
   );
+
+  // Extract place ID from either a number string or a Roblox URL
+  function extractPlaceId(input) {
+    input = input.trim();
+    // pure number
+    if (/^\d+$/.test(input)) return Number(input);
+    // roblox.com/games/12345/...
+    const m = input.match(/roblox\.com\/games\/(\d+)/i);
+    if (m) return Number(m[1]);
+    return null;
+  }
+
+  // ── PLACE ID MODAL ───────────────────────────────────────
+  const modalOverlay = document.getElementById('modalOverlay');
+
+  function openModal() {
+    modalOverlay.classList.add('open');
+    document.getElementById('placeIdInput').focus();
+  }
+  function closeModal() {
+    modalOverlay.classList.remove('open');
+    resetLookup();
+  }
+
+  function resetLookup() {
+    document.getElementById('lookupResult').classList.remove('visible');
+    document.getElementById('lookupError').classList.remove('visible');
+    document.getElementById('lookupLoading').classList.remove('visible');
+    document.getElementById('placeIdInput').value = '';
+    document.getElementById('placeIdSubmit').disabled = false;
+  }
+
+  async function doLookup() {
+    const raw = document.getElementById('placeIdInput').value;
+    const placeId = extractPlaceId(raw);
+
+    const errEl  = document.getElementById('lookupError');
+    const loadEl = document.getElementById('lookupLoading');
+    const resEl  = document.getElementById('lookupResult');
+
+    errEl.classList.remove('visible');
+    resEl.classList.remove('visible');
+
+    if (!placeId) {
+      errEl.textContent = 'Invalid input — enter a Place ID number or paste a Roblox URL.';
+      errEl.classList.add('visible');
+      return;
+    }
+
+    loadEl.classList.add('visible');
+    document.getElementById('placeIdSubmit').disabled = true;
+
+    try {
+      const data = await workerFetch({ action: 'lookup-place', placeId });
+
+      if (data.error) throw new Error(data.error);
+
+      const g = data.game;
+
+      // Thumbnail
+      const thumbWrap = document.getElementById('lookupThumbWrap');
+      if (g.iconUrl) {
+        thumbWrap.innerHTML = `<img class="lookup-thumb" src="${escHtml(g.iconUrl)}" alt="${escHtml(g.name)}"/>`;
+      } else {
+        thumbWrap.innerHTML = `<div class="lookup-thumb-placeholder">NO IMG</div>`;
+      }
+
+      document.getElementById('lookupName').textContent    = g.name;
+      document.getElementById('lsPlaying').textContent     = fmtStat(g.playerCount);
+      document.getElementById('lsVisits').textContent      = fmtStat(g.visits);
+      document.getElementById('lsLikes').textContent       = fmtStat(g.likes);
+      document.getElementById('lsFavs').textContent        = fmtStat(g.favorites);
+      document.getElementById('lsRatio').textContent       = g.likeRatio != null ? g.likeRatio+'%' : '—';
+
+      document.getElementById('lookupOpenBtn').onclick = () =>
+        window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank');
+
+      resEl.classList.add('visible');
+
+    } catch(err) {
+      errEl.textContent = `Error: ${err.message}`;
+      errEl.classList.add('visible');
+    } finally {
+      loadEl.classList.remove('visible');
+      document.getElementById('placeIdSubmit').disabled = false;
+    }
+  }
+
+  document.getElementById('lookupBtn').addEventListener('click', openModal);
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+  document.getElementById('placeIdSubmit').addEventListener('click', doLookup);
+  document.getElementById('placeIdInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLookup();
+    if (e.key === 'Escape') closeModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
 
   // ── BUILD CARD ───────────────────────────────────────────
   function buildCard(g, rank) {
@@ -385,7 +578,7 @@
     return card;
   }
 
-  // ── PATCH DETAILS IN-PLACE ───────────────────────────────
+  // ── PATCH DETAILS ────────────────────────────────────────
   function patchCardDetails(details) {
     Object.entries(details).forEach(([placeId, d]) => {
       if (!d) return;
@@ -401,7 +594,7 @@
     });
   }
 
-  // ── FETCH DETAILS PROGRESSIVELY ─────────────────────────
+  // ── FETCH DETAILS ────────────────────────────────────────
   async function fetchDetails(games, signal) {
     const ids = games.map(g => g.placeId).filter(Boolean);
     for (let i = 0; i < ids.length; i += DETAIL_BATCH) {
@@ -418,22 +611,19 @@
   }
 
   // ── PAGINATION ───────────────────────────────────────────
-  function totalPages() {
-    return Math.ceil(visibleGames.length / PAGE_SIZE);
-  }
+  function totalPages() { return Math.ceil(visibleGames.length / PAGE_SIZE); }
 
   function renderPagination() {
-    const pag  = document.getElementById('pagination');
-    const tp   = totalPages();
+    const pag = document.getElementById('pagination');
+    const tp  = totalPages();
     pag.innerHTML = '';
     if (tp <= 1) return;
 
     const cp = currentPage;
 
-    // Helper to make a button
-    const btn = (label, page, extra = '') => {
+    const mkBtn = (label, page) => {
       const b = document.createElement('button');
-      b.className = `page-btn${extra}`;
+      b.className = 'page-btn';
       b.textContent = label;
       if (page === cp) b.classList.add('active');
       if (page === null) { b.disabled = true; }
@@ -448,39 +638,34 @@
       return s;
     };
 
-    // Prev arrow
+    // prev
     const prev = document.createElement('button');
-    prev.className = 'page-btn arrow';
+    prev.className = 'page-btn';
     prev.textContent = '←';
     prev.disabled = cp === 1;
-    if (cp > 1) prev.addEventListener('click', () => goToPage(cp - 1));
+    if (cp > 1) prev.addEventListener('click', () => goToPage(cp-1));
     pag.appendChild(prev);
 
-    // Page numbers with ellipsis logic
-    // Always show: first, last, current, current±1, current±2
-    const show = new Set();
-    show.add(1);
-    show.add(tp);
+    // pages with smart ellipsis
+    const show = new Set([1, tp]);
     for (let d = -2; d <= 2; d++) {
-      const p = cp + d;
+      const p = cp+d;
       if (p >= 1 && p <= tp) show.add(p);
     }
-
     const pages = [...show].sort((a,b) => a-b);
     let prev_p = 0;
-
     pages.forEach(p => {
       if (p - prev_p > 1) pag.appendChild(ellipsis());
-      pag.appendChild(btn(p, p));
+      pag.appendChild(mkBtn(p, p));
       prev_p = p;
     });
 
-    // Next arrow
+    // next
     const next = document.createElement('button');
-    next.className = 'page-btn arrow';
+    next.className = 'page-btn';
     next.textContent = '→';
     next.disabled = cp === tp;
-    if (cp < tp) next.addEventListener('click', () => goToPage(cp + 1));
+    if (cp < tp) next.addEventListener('click', () => goToPage(cp+1));
     pag.appendChild(next);
   }
 
@@ -488,15 +673,13 @@
     if (page === currentPage) return;
     currentPage = page;
     renderPage();
-    // Scroll to grid top smoothly
     document.querySelector('.grid-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
-  // ── RENDER CURRENT PAGE ──────────────────────────────────
   function renderPage() {
     const grid  = document.getElementById('gameGrid');
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const slice = visibleGames.slice(start, start + PAGE_SIZE);
+    const start = (currentPage-1)*PAGE_SIZE;
+    const slice = visibleGames.slice(start, start+PAGE_SIZE);
 
     if (!slice.length) {
       grid.innerHTML = `<div class="no-results"><h3>No Results</h3><p>Try a different search term.</p></div>`;
@@ -505,24 +688,16 @@
     }
 
     const frag = document.createDocumentFragment();
-    slice.forEach((g, i) => frag.appendChild(buildCard(g, start + i + 1)));
+    slice.forEach((g,i) => frag.appendChild(buildCard(g, start+i+1)));
     grid.innerHTML = '';
     grid.appendChild(frag);
-
     renderPagination();
 
-    // Fetch details for this page's games (background)
-    if (detailAbort && !detailAbort.signal.aborted) {
-      // main fetch running — will patch via detailCache
-    }
-    // Eagerly fetch details for visible page if not cached
+    // Eager fetch details for uncached games on this page
     const uncached = slice.filter(g => !detailCache[g.placeId]);
-    if (uncached.length) {
-      fetchDetails(uncached, detailAbort?.signal);
-    }
+    if (uncached.length) fetchDetails(uncached, detailAbort?.signal);
   }
 
-  // ── SET VISIBLE LIST & RESET TO PAGE 1 ──────────────────
   function setVisibleGames(games) {
     visibleGames = games;
     currentPage  = 1;
@@ -540,8 +715,8 @@
     document.getElementById('gamesTracked').textContent = allGames.length.toLocaleString();
     document.getElementById('lastUpdated').textContent  = new Date().toLocaleTimeString();
 
-    const q = document.getElementById('searchInput').value.trim();
-    const tp = Math.ceil(games.length / PAGE_SIZE);
+    const q  = document.getElementById('searchInput').value.trim();
+    const tp = totalPages();
     document.getElementById('resultCount').textContent = q
       ? `${games.length.toLocaleString()} result${games.length!==1?'s':''}`
       : `${games.length.toLocaleString()} games · ${tp} page${tp!==1?'s':''}`;
@@ -586,7 +761,6 @@
 
     document.getElementById('refreshBtn').disabled = true;
     document.querySelectorAll('.sort-btn').forEach(b => b.disabled = true);
-
     showSkeletons();
 
     try {
@@ -598,8 +772,6 @@
       document.getElementById('searchClear').classList.remove('visible');
 
       setVisibleGames(allGames);
-
-      // Background: fetch ALL details progressively; cards patch in-place
       fetchDetails(allGames, detailAbort.signal);
 
     } catch(err) {
