@@ -8,16 +8,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:        #0d0f14;
-      --surface:   #13161e;
-      --card:      #181c27;
-      --border:    #23293a;
-      --accent:    #4f8ef7;
-      --accent2:   #38e8c6;
-      --text:      #e8eaf2;
-      --muted:     #6b7394;
-      --green:     #3ecf6e;
-      --red:       #f74f4f;
+      --bg:      #0a0c12;
+      --surface: #10131c;
+      --card:    #14182400;
+      --border:  #1e2436;
+      --accent:  #4f8ef7;
+      --accent2: #38e8c6;
+      --text:    #e8eaf2;
+      --muted:   #5a6180;
+      --green:   #3ecf6e;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -30,125 +29,172 @@
       overflow-x: hidden;
     }
 
+    /* ── BACKGROUND GRID + GLOW ── */
     body::before {
       content: '';
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background-image:
-        linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
+        linear-gradient(rgba(79,142,247,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,142,247,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none; z-index: 0;
     }
 
+    body::after {
+      content: '';
+      position: fixed;
+      top: -30vh; left: 50%;
+      transform: translateX(-50%);
+      width: 80vw; height: 60vh;
+      background: radial-gradient(ellipse, rgba(79,142,247,0.08) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── PARTICLES CANVAS ── */
+    #particles {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ── HEADER ── */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(13,15,20,0.85);
-      backdrop-filter: blur(18px);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,12,18,0.8);
+      backdrop-filter: blur(24px);
       border-bottom: 1px solid var(--border);
-      padding: 0 32px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      padding: 0 36px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
     }
 
     .logo {
-      font-size: 1.25rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px;
+      display: flex; align-items: center; gap: 10px;
     }
 
-    .logo-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 10px var(--accent);
-      animation: pulse 2s infinite;
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 0 20px rgba(79,142,247,0.4);
+      animation: logoGlow 3s ease-in-out infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(0.85); }
+    @keyframes logoGlow {
+      0%,100% { box-shadow: 0 0 20px rgba(79,142,247,0.4); }
+      50%      { box-shadow: 0 0 35px rgba(56,232,198,0.5); }
     }
+
+    .header-right { display: flex; align-items: center; gap: 12px; }
 
     .live-badge {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(62,207,110,0.12);
-      border: 1px solid rgba(62,207,110,0.25);
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(62,207,110,0.1);
+      border: 1px solid rgba(62,207,110,0.2);
       color: var(--green);
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      text-transform: uppercase;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 1.2px;
+      padding: 5px 12px; border-radius: 20px; text-transform: uppercase;
     }
 
     .live-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
+      width: 6px; height: 6px; border-radius: 50%;
       background: var(--green);
-      animation: pulse 1.5s infinite;
+      animation: livePulse 1.4s ease-in-out infinite;
     }
 
+    @keyframes livePulse {
+      0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(62,207,110,0.4); }
+      50%      { opacity: 0.7; box-shadow: 0 0 0 4px rgba(62,207,110,0); }
+    }
+
+    .refresh-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'Syne', sans-serif;
+      font-size: 0.75rem; font-weight: 600;
+      padding: 6px 14px; border-radius: 8px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── HERO ── */
     .hero {
-      position: relative;
-      z-index: 1;
-      padding: 56px 32px 32px;
-      max-width: 1280px;
-      margin: 0 auto;
+      position: relative; z-index: 1;
+      padding: 100px 36px 48px;
+      max-width: 1400px; margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem; color: var(--accent);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 14px;
+      opacity: 0; animation: slideIn 0.6s ease 0.1s both;
     }
 
     .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -1.5px;
-      margin-bottom: 12px;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 800; line-height: 1.05; letter-spacing: -2px;
+      margin-bottom: 16px;
+      opacity: 0; animation: slideIn 0.6s ease 0.2s both;
     }
 
-    .hero h1 span {
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .hero h1 .grad {
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       background-clip: text;
+      background-size: 200%; animation: gradShift 4s ease infinite;
+    }
+
+    @keyframes gradShift {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
     }
 
     .hero p {
-      color: var(--muted);
-      font-size: 1rem;
-      max-width: 480px;
-      line-height: 1.6;
+      color: var(--muted); font-size: 1.1rem; max-width: 520px; line-height: 1.8;
+      opacity: 0; animation: slideIn 0.6s ease 0.3s both;
     }
 
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      position: relative; z-index: 1;
+      max-width: 1400px; margin: 0 auto;
+      padding: 0 36px 28px;
+      display: flex; gap: 16px; flex-wrap: wrap;
+      opacity: 0; animation: slideIn 0.6s ease 0.4s both;
+    }
+
+    .stat-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .stat-pill-icon { font-size: 1rem; }
+    .stat-pill-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+    .stat-pill-val   { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+
+    /* ── CONTROLS ── */
     .controls {
-      position: relative;
-      z-index: 1;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 32px 28px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      position: relative; z-index: 1;
+      max-width: 1400px; margin: 0 auto;
+      padding: 0 36px 24px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
     }
 
     .controls-label {
-      color: var(--muted);
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-right: 4px;
+      color: var(--muted); font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 1.2px; text-transform: uppercase; margin-right: 6px;
     }
 
     .sort-btn {
@@ -156,297 +202,482 @@
       border: 1px solid var(--border);
       color: var(--muted);
       font-family: 'Syne', sans-serif;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.18s ease;
+      font-size: 0.78rem; font-weight: 600;
+      padding: 8px 18px; border-radius: 8px;
+      cursor: pointer; transition: all 0.2s ease;
+      position: relative; overflow: hidden;
+    }
+
+    .sort-btn::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(79,142,247,0.15), transparent);
+      opacity: 0; transition: opacity 0.2s;
     }
 
     .sort-btn:hover { border-color: var(--accent); color: var(--text); }
-    .sort-btn.active { background: rgba(79,142,247,0.15); border-color: var(--accent); color: var(--accent); }
+    .sort-btn:hover::after { opacity: 1; }
+    .sort-btn.active {
+      border-color: var(--accent); color: var(--accent);
+      background: rgba(79,142,247,0.1);
+    }
+    .sort-btn.active::after { opacity: 1; }
 
+    /* ── GRID ── */
     .grid-wrap {
-      position: relative;
-      z-index: 1;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 32px 64px;
+      position: relative; z-index: 1;
+      max-width: 1400px; margin: 0 auto;
+      padding: 0 36px 80px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 240px));
+      gap: 20px;
     }
 
+    /* ── CARD ── */
     .card {
-      background: var(--card);
+      background: linear-gradient(145deg, #14182a, #0f1220);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: 16px;
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-      animation: fadeUp 0.4s ease both;
+      position: relative;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s, box-shadow 0.25s;
+      animation: cardIn 0.5s cubic-bezier(0.34,1.2,0.64,1) both;
     }
+
+    /* shimmer scan line on hover */
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.04) 50%, transparent 60%);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+      z-index: 2; pointer-events: none;
+    }
+
+    .card:hover::before { transform: translateX(100%); }
 
     .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(79,142,247,0.4);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(79,142,247,0.1);
+      transform: translateY(-6px) scale(1.01);
+      border-color: rgba(79,142,247,0.5);
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(79,142,247,0.15),
+        0 0 40px rgba(79,142,247,0.08);
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
+
+    /* rank badge */
+    .card-rank-badge {
+      position: absolute; top: 10px; left: 10px; z-index: 3;
+      background: rgba(10,12,18,0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem; font-weight: 500;
+      color: var(--muted); padding: 3px 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .card-rank-badge.top3 {
+      background: rgba(79,142,247,0.2);
+      border-color: rgba(79,142,247,0.4);
+      color: var(--accent);
+    }
+
+    .card-thumb-wrap { position: relative; overflow: hidden; }
 
     .card-thumb {
-      width: 100%;
-      aspect-ratio: 16/9;
-      object-fit: cover;
-      background: var(--surface);
-      display: block;
+      width: 100%; aspect-ratio: 16/9;
+      object-fit: cover; display: block;
+      transition: transform 0.4s ease;
     }
+
+    .card:hover .card-thumb { transform: scale(1.04); }
 
     .card-thumb-placeholder {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background: linear-gradient(135deg, #181c27 0%, #1e2333 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
+      width: 100%; aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #141828, #1a2040);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
     }
 
-    .card-body { padding: 14px 16px 16px; }
-
-    .card-rank {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 5px;
+    /* gradient overlay on thumb */
+    .card-thumb-wrap::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
+      background: linear-gradient(transparent, rgba(10,12,18,0.8));
+      pointer-events: none;
     }
+
+    .card-body { padding: 18px 18px 20px; }
 
     .card-name {
-      font-size: 0.95rem;
-      font-weight: 700;
-      line-height: 1.3;
+      font-size: 1rem; font-weight: 700; line-height: 1.4;
       margin-bottom: 12px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
     .card-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 7px;
     }
 
     .stat {
-      background: var(--surface);
-      border-radius: 8px;
-      padding: 8px 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px; padding: 10px 12px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .card:hover .stat {
+      background: rgba(79,142,247,0.05);
+      border-color: rgba(79,142,247,0.12);
     }
 
     .stat-label {
       font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      color: var(--muted);
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      margin-bottom: 3px;
+      font-size: 0.58rem; color: var(--muted);
+      letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 3px;
     }
 
-    .stat-value { font-size: 0.9rem; font-weight: 700; }
+    .stat-value { font-size: 0.88rem; font-weight: 700; }
     .stat-value.green { color: var(--green); }
     .stat-value.blue  { color: var(--accent); }
     .stat-value.teal  { color: var(--accent2); }
+    .stat-value.white { color: var(--text); }
 
+    /* ── SKELETON ── */
     .skeleton {
-      background: var(--card);
+      background: linear-gradient(145deg, #14182a, #0f1220);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-      animation: shimmer 1.5s infinite;
+      border-radius: 16px; overflow: hidden;
     }
 
     .skeleton-thumb { width: 100%; aspect-ratio: 16/9; background: var(--surface); }
     .skeleton-body  { padding: 14px 16px 16px; }
 
     .skeleton-line {
-      height: 10px;
-      border-radius: 4px;
-      background: var(--border);
+      height: 9px; border-radius: 4px;
+      background: linear-gradient(90deg, var(--border) 25%, #2a3050 50%, var(--border) 75%);
+      background-size: 200% 100%;
       margin-bottom: 8px;
+      animation: shimmer 1.6s infinite;
     }
 
     @keyframes shimmer {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.5; }
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
-    .error-box { text-align: center; padding: 64px 32px; color: var(--muted); grid-column: 1/-1; }
-    .error-box h2 { font-size: 1.2rem; margin-bottom: 8px; color: var(--text); }
+    /* ── ERROR ── */
+    .error-box {
+      grid-column: 1/-1; text-align: center; padding: 80px 32px; color: var(--muted);
+    }
+    .error-box h2 { font-size: 1.3rem; margin-bottom: 10px; color: var(--text); }
+    .error-box p  { font-size: 0.9rem; line-height: 1.7; }
 
+    /* ── FOOTER ── */
     footer {
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
       border-top: 1px solid var(--border);
-      padding: 20px 32px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.75rem;
+      padding: 22px 36px; text-align: center;
+      color: var(--muted); font-size: 0.72rem;
     }
 
-    @media (max-width: 600px) {
-      header, .hero, .controls, .grid-wrap { padding-left: 16px; padding-right: 16px; }
+    @media (max-width: 640px) {
+      header, .hero, .stats-bar, .controls, .grid-wrap { padding-left: 16px; padding-right: 16px; }
+      .grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo"><div class="logo-dot"></div>RobloxCharts</div>
+<canvas id="particles"></canvas>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🎮</div>
+    RobloxCharts
+  </div>
+  <div class="header-right">
     <div class="live-badge"><div class="live-dot"></div> Live</div>
-  </header>
-
-  <section class="hero">
-    <h1>Top Roblox<br><span>Games Right Now</span></h1>
-    <p>Live stats from the Roblox API — sort by active players, total visits, and more.</p>
-  </section>
-
-  <div class="controls">
-    <span class="controls-label">Sort by</span>
-    <button class="sort-btn active" data-sort="playing">Active Players</button>
-    <button class="sort-btn" data-sort="visits">Total Visits</button>
-    <button class="sort-btn" data-sort="favoritedCount">Favorites</button>
+    <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
   </div>
+</header>
 
-  <div class="grid-wrap">
-    <div class="grid" id="gameGrid"></div>
+<section class="hero">
+  <div class="hero-eyebrow">📊 Real-time leaderboard</div>
+  <h1>Top Roblox<br><span class="grad">Games Right Now</span></h1>
+  <p>Live player counts, total visits, and favorites — pulled straight from the Roblox API and updated every minute.</p>
+</section>
+
+<div class="stats-bar" id="statsBar">
+  <div class="stat-pill">
+    <span class="stat-pill-icon">🟢</span>
+    <div>
+      <div class="stat-pill-label">Total Playing</div>
+      <div class="stat-pill-val" id="totalPlaying">—</div>
+    </div>
   </div>
+  <div class="stat-pill">
+    <span class="stat-pill-icon">🎮</span>
+    <div>
+      <div class="stat-pill-label">Games Tracked</div>
+      <div class="stat-pill-val" id="gamesTracked">—</div>
+    </div>
+  </div>
+  <div class="stat-pill">
+    <span class="stat-pill-icon">⏱</span>
+    <div>
+      <div class="stat-pill-label">Last Updated</div>
+      <div class="stat-pill-val" id="lastUpdated">—</div>
+    </div>
+  </div>
+</div>
 
-  <footer>RobloxCharts — not affiliated with Roblox Corporation · Data from the Roblox public API</footer>
+<div class="controls">
+  <span class="controls-label">Sort by</span>
+  <button class="sort-btn active" data-sort="playing">🟢 Active Players</button>
+  <button class="sort-btn" data-sort="visits">👁 Total Visits</button>
+  <button class="sort-btn" data-sort="favoritedCount">⭐ Favorites</button>
+</div>
 
-  <script>
-    const PROXY = 'https://corsproxy.io/?';
+<div class="grid-wrap">
+  <div class="grid" id="gameGrid"></div>
+</div>
 
-    const SORT_MAP = {
-      playing:        'MostEngaging',
-      visits:         'MostVisited',
-      favoritedCount: 'TopFavorited',
-    };
+<footer>RobloxCharts — not affiliated with Roblox Corporation · Data from the Roblox public API</footer>
 
-    let currentSort = 'playing';
+<script>
+  // ── PARTICLES ────────────────────────────────────────────
+  (function() {
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let W, H, dots = [];
 
-    function fmt(n) {
-      if (n == null) return '—';
-      if (n >= 1e9) return (n/1e9).toFixed(1)+'B';
-      if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
-      if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
-      return n.toLocaleString();
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
     }
 
-    async function fetchGames(sortKey) {
-      const sortFilter = SORT_MAP[sortKey] || 'MostEngaging';
-      const url = `https://games.roblox.com/v1/games/list?SortFilter=${sortFilter}&GameFilter=0&StartRows=0&MaxRows=48`;
-      const res = await fetch(PROXY + encodeURIComponent(url));
-      if (!res.ok) throw new Error('API error ' + res.status);
-      const data = await res.json();
-      return data.games || [];
+    function init() {
+      dots = Array.from({length: 60}, () => ({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.5 + 0.3,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        alpha: Math.random() * 0.4 + 0.1,
+      }));
     }
 
-    async function fetchThumbs(universeIds) {
-      const ids = universeIds.join(',');
-      const url = `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${ids}&size=768x432&format=Png&isCircular=false`;
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      dots.forEach(d => {
+        d.x += d.vx; d.y += d.vy;
+        if (d.x < 0) d.x = W; if (d.x > W) d.x = 0;
+        if (d.y < 0) d.y = H; if (d.y > H) d.y = 0;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(79,142,247,${d.alpha})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', () => { resize(); init(); });
+    resize(); init(); draw();
+  })();
+
+  // ── PROXIES ──────────────────────────────────────────────
+  const PROXIES = [
+    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+    u => `https://thingproxy.freeboard.io/fetch/${u}`,
+  ];
+
+  async function proxyFetch(url) {
+    for (const makeUrl of PROXIES) {
       try {
-        const res = await fetch(PROXY + encodeURIComponent(url));
-        const data = await res.json();
-        const map = {};
-        (data.data || []).forEach(item => {
-          const thumb = item.thumbnails?.[0];
-          if (thumb?.imageUrl) map[item.universeId] = thumb.imageUrl;
-        });
-        return map;
-      } catch { return {}; }
+        const res = await fetch(makeUrl(url), { signal: AbortSignal.timeout(7000) });
+        if (res.ok) return res;
+      } catch { continue; }
+    }
+    throw new Error('All proxies failed');
+  }
+
+  // ── CONFIG ───────────────────────────────────────────────
+  const SORT_MAP = {
+    playing:        'MostEngaging',
+    visits:         'MostVisited',
+    favoritedCount: 'TopFavorited',
+  };
+
+  let currentSort = 'playing';
+
+  function fmt(n) {
+    if (n == null) return '—';
+    if (n >= 1e9) return (n/1e9).toFixed(1)+'B';
+    if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
+    if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
+    return n.toLocaleString();
+  }
+
+  // ── ANIMATED COUNTER ─────────────────────────────────────
+  function animateCount(el, target) {
+    const start = 0, duration = 800;
+    const startTime = performance.now();
+    function step(now) {
+      const p = Math.min((now - startTime) / duration, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(Math.floor(ease * target));
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = fmt(target);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // ── FETCH ────────────────────────────────────────────────
+  async function fetchGames(sortKey) {
+    const sortFilter = SORT_MAP[sortKey] || 'MostEngaging';
+    const url = `https://games.roblox.com/v1/games/list?SortFilter=${sortFilter}&GameFilter=0&StartRows=0&MaxRows=48`;
+    const res = await proxyFetch(url);
+    const data = await res.json();
+    return data.games || [];
+  }
+
+  async function fetchThumbs(universeIds) {
+    const ids = universeIds.join(',');
+    const url = `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${ids}&size=768x432&format=Png&isCircular=false`;
+    try {
+      const res = await proxyFetch(url);
+      const data = await res.json();
+      const map = {};
+      (data.data || []).forEach(item => {
+        const t = item.thumbnails?.[0];
+        if (t?.imageUrl) map[item.universeId] = t.imageUrl;
+      });
+      return map;
+    } catch { return {}; }
+  }
+
+  // ── SKELETONS ────────────────────────────────────────────
+  function showSkeletons() {
+    document.getElementById('gameGrid').innerHTML = Array(12).fill(`
+      <div class="skeleton">
+        <div class="skeleton-thumb"></div>
+        <div class="skeleton-body">
+          <div class="skeleton-line" style="width:30%"></div>
+          <div class="skeleton-line" style="width:72%"></div>
+          <div class="skeleton-line" style="width:50%"></div>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── RENDER ───────────────────────────────────────────────
+  function renderCards(games, thumbs) {
+    const grid = document.getElementById('gameGrid');
+    grid.innerHTML = '';
+
+    if (!games.length) {
+      grid.innerHTML = `<div class="error-box"><h2>No games found</h2><p>Could not load data. Try refreshing.</p></div>`;
+      return;
     }
 
-    function showSkeletons() {
-      document.getElementById('gameGrid').innerHTML = Array(12).fill(`
-        <div class="skeleton">
-          <div class="skeleton-thumb"></div>
-          <div class="skeleton-body">
-            <div class="skeleton-line" style="width:35%"></div>
-            <div class="skeleton-line" style="width:75%"></div>
-            <div class="skeleton-line" style="width:55%"></div>
-          </div>
-        </div>`).join('');
-    }
+    // Update stats bar
+    const total = games.reduce((s, g) => s + (g.playerCount || 0), 0);
+    const tp = document.getElementById('totalPlaying');
+    animateCount(tp, total);
+    document.getElementById('gamesTracked').textContent = games.length;
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
 
-    function renderCards(games, thumbs) {
-      const grid = document.getElementById('gameGrid');
-      grid.innerHTML = '';
-      if (!games.length) {
-        grid.innerHTML = `<div class="error-box"><h2>No games found</h2><p>Could not load game data. Try refreshing.</p></div>`;
-        return;
-      }
-      games.forEach((g, i) => {
-        const thumb = thumbs[g.universeId];
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.style.animationDelay = (i % 12) * 40 + 'ms';
-        card.innerHTML = `
+    games.forEach((g, i) => {
+      const thumb = thumbs[g.universeId];
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.animationDelay = (i % 12) * 45 + 'ms';
+
+      const isTop3 = i < 3;
+      const rankLabels = ['🥇', '🥈', '🥉'];
+
+      card.innerHTML = `
+        <div class="card-thumb-wrap">
           ${thumb
             ? `<img class="card-thumb" src="${thumb}" alt="${g.name}" loading="lazy"/>`
             : `<div class="card-thumb-placeholder">🎮</div>`}
-          <div class="card-body">
-            <div class="card-rank"># ${i + 1}</div>
-            <div class="card-name">${g.name}</div>
-            <div class="card-stats">
-              <div class="stat"><div class="stat-label">Playing</div><div class="stat-value green">${fmt(g.playerCount)}</div></div>
-              <div class="stat"><div class="stat-label">Visits</div><div class="stat-value blue">${fmt(g.visits ?? g.visitCount)}</div></div>
-              <div class="stat"><div class="stat-label">Likes</div><div class="stat-value">${fmt(g.totalUpVotes)}</div></div>
-              <div class="stat"><div class="stat-label">Favorites</div><div class="stat-value teal">${fmt(g.favoritedCount)}</div></div>
+          <div class="card-rank-badge ${isTop3 ? 'top3' : ''}">
+            ${isTop3 ? rankLabels[i] + ' #' + (i+1) : '# ' + (i+1)}
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-name">${g.name}</div>
+          <div class="card-stats">
+            <div class="stat">
+              <div class="stat-label">Playing</div>
+              <div class="stat-value green">${fmt(g.playerCount)}</div>
             </div>
-          </div>`;
-        card.addEventListener('click', () => window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank'));
-        grid.appendChild(card);
-      });
-    }
+            <div class="stat">
+              <div class="stat-label">Visits</div>
+              <div class="stat-value blue">${fmt(g.visits ?? g.visitCount)}</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Likes</div>
+              <div class="stat-value white">${fmt(g.totalUpVotes)}</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Favorites</div>
+              <div class="stat-value teal">${fmt(g.favoritedCount)}</div>
+            </div>
+          </div>
+        </div>`;
 
-    async function load(sortKey) {
-      showSkeletons();
-      try {
-        const games = await fetchGames(sortKey);
-        const ids = games.map(g => g.universeId).filter(Boolean);
-        const thumbs = ids.length ? await fetchThumbs(ids) : {};
-        renderCards(games, thumbs);
-      } catch (err) {
-        console.error(err);
-        document.getElementById('gameGrid').innerHTML = `
-          <div class="error-box">
-            <h2>Couldn't load games</h2>
-            <p>The Roblox API may be blocking the request.<br>Try again in a moment.</p>
-          </div>`;
-      }
-    }
-
-    document.querySelectorAll('.sort-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentSort = btn.dataset.sort;
-        load(currentSort);
-      });
+      card.addEventListener('click', () => window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank'));
+      grid.appendChild(card);
     });
+  }
 
-    load(currentSort);
-    setInterval(() => load(currentSort), 60_000);
-  </script>
+  // ── LOAD ─────────────────────────────────────────────────
+  async function load(sortKey) {
+    showSkeletons();
+    try {
+      const games = await fetchGames(sortKey);
+      const ids = games.map(g => g.universeId).filter(Boolean);
+      const thumbs = ids.length ? await fetchThumbs(ids) : {};
+      renderCards(games, thumbs);
+    } catch (err) {
+      console.error(err);
+      document.getElementById('gameGrid').innerHTML = `
+        <div class="error-box">
+          <h2>Couldn't load games</h2>
+          <p>All proxies failed. The Roblox API may be temporarily unavailable.<br>Try refreshing in a moment.</p>
+        </div>`;
+    }
+  }
+
+  // ── CONTROLS ─────────────────────────────────────────────
+  document.querySelectorAll('.sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentSort = btn.dataset.sort;
+      load(currentSort);
+    });
+  });
+
+  document.getElementById('refreshBtn').addEventListener('click', () => load(currentSort));
+
+  // ── INIT ─────────────────────────────────────────────────
+  load(currentSort);
+  setInterval(() => load(currentSort), 60_000);
+</script>
 </body>
 </html>
