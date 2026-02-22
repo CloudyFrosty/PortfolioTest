@@ -497,22 +497,14 @@
     resize(); init(); draw();
   })();
 
-  // ── PROXIES ──────────────────────────────────────────────
-  const PROXIES = [
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-    u => `https://thingproxy.freeboard.io/fetch/${u}`,
-  ];
+  // ── PROXY ───────────────────────────────────────────────
+  const WORKER_URL = 'https://young-resonance-128e.frostyknight2354.workers.dev';
 
   async function proxyFetch(url) {
-    for (const makeUrl of PROXIES) {
-      try {
-        const res = await fetch(makeUrl(url), { signal: AbortSignal.timeout(7000) });
-        if (res.ok) return res;
-      } catch { continue; }
-    }
-    throw new Error('All proxies failed');
+    const workerUrl = WORKER_URL + '?url=' + encodeURIComponent(url);
+    const res = await fetch(workerUrl, { signal: AbortSignal.timeout(10000) });
+    if (res.ok) return res;
+    throw new Error('Worker fetch failed: ' + res.status);
   }
 
   // ── CONFIG ───────────────────────────────────────────────
