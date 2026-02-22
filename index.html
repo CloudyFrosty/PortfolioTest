@@ -502,7 +502,7 @@
 
   async function proxyFetch(url) {
     const workerUrl = WORKER_URL + '?url=' + encodeURIComponent(url);
-    const res = await fetch(workerUrl, { signal: AbortSignal.timeout(10000) });
+    const res = await fetch(workerUrl);
     if (res.ok) return res;
     throw new Error('Worker fetch failed: ' + res.status);
   }
@@ -540,11 +540,21 @@
 
   // ── FETCH ────────────────────────────────────────────────
   async function fetchGames(sortKey) {
-    const sortFilter = SORT_MAP[sortKey] || 'MostEngaging';
-    const url = `https://games.roblox.com/v1/games/list?SortFilter=${sortFilter}&GameFilter=0&StartRows=0&MaxRows=48`;
+    // Use the sort token endpoint which is less restricted
+    const sortMap2 = {
+      playing: '0',
+      visits: '2',
+      favoritedCount: '5',
+    };
+    const sortId = sortMap2[sortKey] || '0';
+    const url = `https://games.roblox.com/v1/games/list?SortFilter=${sortId}&GameFilter=0&StartRows=0&MaxRows=48`;
     const res = await proxyFetch(url);
-    const data = await res.json();
-    return data.games || [];
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch(e) { throw new Error('Bad JSON: ' + text.slice(0,100)); }
+    if (data.games && data.games.length) return data.games;
+    if (data.errors) throw new Error('Roblox error: ' + JSON.stringify(data.errors));
+    return [];
   }
 
   async function fetchThumbs(universeIds) {
