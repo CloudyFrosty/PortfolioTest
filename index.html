@@ -274,9 +274,7 @@
       color:var(--muted);
       line-height:1.4;
     }
-    .card-rank.top1 { color:#ffd700; border-color:rgba(255,215,0,0.3); background:rgba(255,215,0,0.1); }
-    .card-rank.top2 { color:#c0c8e0; border-color:rgba(192,200,224,0.25); }
-    .card-rank.top3 { color:#cd8f52; border-color:rgba(205,143,82,0.25); }
+    .card-rank.top1, .card-rank.top2, .card-rank.top3 { color:var(--text); border-color:rgba(255,255,255,0.12); }
 
     .card-thumb-wrap { position:relative; overflow:hidden; background:var(--surface); }
     .card-thumb {
@@ -432,25 +430,19 @@
   const WORKER_URL = 'https://young-resonance-128e.frostyknight2354.workers.dev';
   let currentSort = 'TopCharts';
   let loading = false;
-  let allGames = []; // full dataset for client-side search
+  let allGames = [];
+  // Map of placeId → {visits, upVotes, favoritedCount} — filled in progressively
+  let detailCache = {};
 
   // ── FORMAT ─────────────────────────────────────────────
   function fmt(n) {
-    if (n == null) return null; // return null so we can show placeholder
+    if (n == null) return null;
     if (n >= 1e9) return (n/1e9).toFixed(1)+'B';
     if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
     if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
     return n.toLocaleString();
   }
-
-  function fmtStat(n) {
-    const v = fmt(n);
-    return v !== null ? v : '—';
-  }
-
-  function statClass(n) {
-    return (n == null) ? 'muted' : '';
-  }
+  function fmtStat(n) { const v = fmt(n); return v !== null ? v : '—'; }
 
   function animateCount(el, target) {
     if (!target) { el.textContent = fmtStat(target); return; }
@@ -488,7 +480,7 @@
     grid.appendChild(frag);
   }
 
-  // ── RENDER ─────────────────────────────────────────────
+  // ── RENDER CARDS ───────────────────────────────────────
   function renderCards(games) {
     const grid = document.getElementById('gameGrid');
     const searchCount = document.getElementById('searchCount');
@@ -508,56 +500,40 @@
     document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
 
     const frag = document.createDocumentFragment();
-
     games.forEach((g, i) => {
       const card = document.createElement('div');
       card.className = 'card';
+      card.dataset.placeid = g.rootPlaceId;
 
-      // Rank badge classes
       const rankClass = i === 0 ? 'top1' : i === 1 ? 'top2' : i === 2 ? 'top3' : '';
-      const rankLabel = `#${i+1}`;
-
       const safeName = (g.name||'Unknown').replace(/[<>]/g, c => c==='<'?'&lt;':'&gt;');
 
-      // Stats — show — only if truly null, otherwise show value
-      const playing   = fmtStat(g.playerCount);
-      const visits    = fmtStat(g.visits);
-      const likes     = fmtStat(g.upVotes);
-      const favs      = fmtStat(g.favoritedCount);
+      // Merge detail cache if available
+      const detail = detailCache[g.rootPlaceId] || {};
+      const visits = fmtStat(detail.visits ?? null);
+      const likes  = fmtStat(detail.upVotes ?? null);
+      const favs   = fmtStat(detail.favoritedCount ?? null);
 
       card.innerHTML = `
         <div class="card-thumb-wrap">
           ${g.iconUrl
             ? `<img class="card-thumb" src="${g.iconUrl}" alt="${safeName}" loading="lazy" decoding="async"/>`
             : `<div class="card-thumb-placeholder">NO IMG</div>`}
-          <div class="card-rank ${rankClass}">${rankLabel}</div>
+          <div class="card-rank ${rankClass}">#${i+1}</div>
         </div>
         <div class="card-body">
           <div class="card-name">${safeName}</div>
           <div class="card-stats">
-            <div class="stat">
-              <div class="stat-label">Playing</div>
-              <div class="stat-val green">${playing}</div>
-            </div>
-            <div class="stat">
-              <div class="stat-label">Visits</div>
-              <div class="stat-val blue ${g.visits==null?'muted':''}">${visits}</div>
-            </div>
-            <div class="stat">
-              <div class="stat-label">Likes</div>
-              <div class="stat-val white ${g.upVotes==null?'muted':''}">${likes}</div>
-            </div>
-            <div class="stat">
-              <div class="stat-label">Favorites</div>
-              <div class="stat-val teal ${g.favoritedCount==null?'muted':''}">${favs}</div>
-            </div>
+            <div class="stat"><div class="stat-label">Playing</div><div class="stat-val green">${fmtStat(g.playerCount)}</div></div>
+            <div class="stat"><div class="stat-label">Visits</div><div class="stat-val blue" data-field="visits">${visits}</div></div>
+            <div class="stat"><div class="stat-label">Likes</div><div class="stat-val white" data-field="upVotes">${likes}</div></div>
+            <div class="stat"><div class="stat-label">Favorites</div><div class="stat-val teal" data-field="favoritedCount">${favs}</div></div>
           </div>
         </div>`;
 
       if (g.rootPlaceId) {
         card.addEventListener('click', () => window.open(`https://www.roblox.com/games/${g.rootPlaceId}`, '_blank'));
       }
-
       frag.appendChild(card);
     });
 
@@ -565,30 +541,55 @@
     grid.appendChild(frag);
   }
 
+  // ── UPDATE CARD DETAILS IN-PLACE ───────────────────────
+  // Called as each detail batch comes back — updates DOM without re-rendering
+  function patchCardDetails(details) {
+    Object.entries(details).forEach(([placeId, d]) => {
+      if (!d) return;
+      detailCache[placeId] = d;
+      const card = document.querySelector(`.card[data-placeid="${placeId}"]`);
+      if (!card) return;
+      const set = (field, val) => {
+        const el = card.querySelector(`[data-field="${field}"]`);
+        if (el) el.textContent = fmtStat(val);
+      };
+      set('visits',         d.visits);
+      set('upVotes',        d.upVotes);
+      set('favoritedCount', d.favoritedCount);
+    });
+  }
+
+  // ── FETCH DETAILS IN BACKGROUND ────────────────────────
+  // Sends games in pages of 100 placeIds so each worker call stays fast
+  async function fetchDetailsProgressively(games) {
+    const PAGE = 100;
+    const placeIds = games.map(g => g.rootPlaceId).filter(Boolean);
+
+    for (let i = 0; i < placeIds.length; i += PAGE) {
+      const batch = placeIds.slice(i, i + PAGE);
+      try {
+        const data = await workerFetch({ action: 'get-details', placeIds: batch.join(',') });
+        if (data.details) patchCardDetails(data.details);
+      } catch(err) {
+        console.warn('Detail batch failed:', err.message);
+      }
+    }
+  }
+
   // ── SEARCH ─────────────────────────────────────────────
   function applySearch() {
     const q = document.getElementById('searchInput').value.trim().toLowerCase();
     document.getElementById('searchClear').classList.toggle('visible', q.length > 0);
-
     if (!allGames.length) return;
-
-    if (!q) {
-      renderCards(allGames);
-      return;
-    }
-
-    const filtered = allGames.filter(g =>
-      (g.name||'').toLowerCase().includes(q)
-    );
-    renderCards(filtered);
+    renderCards(q ? allGames.filter(g => (g.name||'').toLowerCase().includes(q)) : allGames);
   }
 
   // ── LOAD ───────────────────────────────────────────────
   async function load(sortName) {
     if (loading) return;
     loading = true;
+    detailCache = {}; // clear cache on new load
 
-    // spin refresh button
     const btn = document.getElementById('refreshBtn');
     btn.classList.add('spinning');
     setTimeout(() => btn.classList.remove('spinning'), 600);
@@ -596,16 +597,21 @@
     showSkeletons();
 
     try {
-      const data = await workerFetch({ action:'get-sort-content', sortId:sortName });
+      // Step 1: fast — get game list (just names + player counts + icons)
+      const data = await workerFetch({ action: 'get-sort-content', sortId: sortName });
       allGames = data.games || [];
       if (!allGames.length) throw new Error('No games returned');
 
-      // reset search on new load
       document.getElementById('searchInput').value = '';
       document.getElementById('searchClear').classList.remove('visible');
       document.getElementById('searchCount').textContent = '';
 
       renderCards(allGames);
+
+      // Step 2: slow — fetch visits/likes/favorites in background pages
+      // Don't await — runs independently, patches cards as data arrives
+      fetchDetailsProgressively(allGames);
+
     } catch(err) {
       console.error(err);
       document.getElementById('gameGrid').innerHTML = `
@@ -647,7 +653,7 @@
     document.getElementById('searchInput').focus();
   });
 
-  // ── INIT (no auto-refresh) ─────────────────────────────
+  // ── INIT ───────────────────────────────────────────────
   load(currentSort);
 </script>
 </body>
