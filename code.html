@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RobloxCharts — Top Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0d0f14;
+      --surface:   #13161e;
+      --card:      #181c27;
+      --border:    #23293a;
+      --accent:    #4f8ef7;
+      --accent2:   #38e8c6;
+      --text:      #e8eaf2;
+      --muted:     #6b7394;
+      --green:     #3ecf6e;
+      --red:       #f74f4f;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,15,20,0.85);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.85); }
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(62,207,110,0.12);
+      border: 1px solid rgba(62,207,110,0.25);
+      color: var(--green);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    .live-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 1.5s infinite;
+    }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+      padding: 56px 32px 32px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 480px;
+      line-height: 1.6;
+    }
+
+    .controls {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .controls-label {
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+
+    .sort-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'Syne', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .sort-btn:hover { border-color: var(--accent); color: var(--text); }
+    .sort-btn.active { background: rgba(79,142,247,0.15); border-color: var(--accent); color: var(--accent); }
+
+    .grid-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px 64px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(79,142,247,0.4);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(79,142,247,0.1);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      background: var(--surface);
+      display: block;
+    }
+
+    .card-thumb-placeholder {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #181c27 0%, #1e2333 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .card-body { padding: 14px 16px 16px; }
+
+    .card-rank {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .card-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .stat-value { font-size: 0.9rem; font-weight: 700; }
+    .stat-value.green { color: var(--green); }
+    .stat-value.blue  { color: var(--accent); }
+    .stat-value.teal  { color: var(--accent2); }
+
+    .skeleton {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      animation: shimmer 1.5s infinite;
+    }
+
+    .skeleton-thumb { width: 100%; aspect-ratio: 16/9; background: var(--surface); }
+    .skeleton-body  { padding: 14px 16px 16px; }
+
+    .skeleton-line {
+      height: 10px;
+      border-radius: 4px;
+      background: var(--border);
+      margin-bottom: 8px;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.5; }
+    }
+
+    .error-box { text-align: center; padding: 64px 32px; color: var(--muted); grid-column: 1/-1; }
+    .error-box h2 { font-size: 1.2rem; margin-bottom: 8px; color: var(--text); }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 20px 32px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 600px) {
+      header, .hero, .controls, .grid-wrap { padding-left: 16px; padding-right: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo"><div class="logo-dot"></div>RobloxCharts</div>
+    <div class="live-badge"><div class="live-dot"></div> Live</div>
+  </header>
+
+  <section class="hero">
+    <h1>Top Roblox<br><span>Games Right Now</span></h1>
+    <p>Live stats from the Roblox API — sort by active players, total visits, and more.</p>
+  </section>
+
+  <div class="controls">
+    <span class="controls-label">Sort by</span>
+    <button class="sort-btn active" data-sort="playing">Active Players</button>
+    <button class="sort-btn" data-sort="visits">Total Visits</button>
+    <button class="sort-btn" data-sort="favoritedCount">Favorites</button>
+  </div>
+
+  <div class="grid-wrap">
+    <div class="grid" id="gameGrid"></div>
+  </div>
+
+  <footer>RobloxCharts — not affiliated with Roblox Corporation · Data from the Roblox public API</footer>
+
+  <script>
+    const PROXY = 'https://corsproxy.io/?';
+
+    const SORT_MAP = {
+      playing:        'MostEngaging',
+      visits:         'MostVisited',
+      favoritedCount: 'TopFavorited',
+    };
+
+    let currentSort = 'playing';
+
+    function fmt(n) {
+      if (n == null) return '—';
+      if (n >= 1e9) return (n/1e9).toFixed(1)+'B';
+      if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
+      if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
+      return n.toLocaleString();
+    }
+
+    async function fetchGames(sortKey) {
+      const sortFilter = SORT_MAP[sortKey] || 'MostEngaging';
+      const url = `https://games.roblox.com/v1/games/list?SortFilter=${sortFilter}&GameFilter=0&StartRows=0&MaxRows=48`;
+      const res = await fetch(PROXY + encodeURIComponent(url));
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const data = await res.json();
+      return data.games || [];
+    }
+
+    async function fetchThumbs(universeIds) {
+      const ids = universeIds.join(',');
+      const url = `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${ids}&size=768x432&format=Png&isCircular=false`;
+      try {
+        const res = await fetch(PROXY + encodeURIComponent(url));
+        const data = await res.json();
+        const map = {};
+        (data.data || []).forEach(item => {
+          const thumb = item.thumbnails?.[0];
+          if (thumb?.imageUrl) map[item.universeId] = thumb.imageUrl;
+        });
+        return map;
+      } catch { return {}; }
+    }
+
+    function showSkeletons() {
+      document.getElementById('gameGrid').innerHTML = Array(12).fill(`
+        <div class="skeleton">
+          <div class="skeleton-thumb"></div>
+          <div class="skeleton-body">
+            <div class="skeleton-line" style="width:35%"></div>
+            <div class="skeleton-line" style="width:75%"></div>
+            <div class="skeleton-line" style="width:55%"></div>
+          </div>
+        </div>`).join('');
+    }
+
+    function renderCards(games, thumbs) {
+      const grid = document.getElementById('gameGrid');
+      grid.innerHTML = '';
+      if (!games.length) {
+        grid.innerHTML = `<div class="error-box"><h2>No games found</h2><p>Could not load game data. Try refreshing.</p></div>`;
+        return;
+      }
+      games.forEach((g, i) => {
+        const thumb = thumbs[g.universeId];
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.animationDelay = (i % 12) * 40 + 'ms';
+        card.innerHTML = `
+          ${thumb
+            ? `<img class="card-thumb" src="${thumb}" alt="${g.name}" loading="lazy"/>`
+            : `<div class="card-thumb-placeholder">🎮</div>`}
+          <div class="card-body">
+            <div class="card-rank"># ${i + 1}</div>
+            <div class="card-name">${g.name}</div>
+            <div class="card-stats">
+              <div class="stat"><div class="stat-label">Playing</div><div class="stat-value green">${fmt(g.playerCount)}</div></div>
+              <div class="stat"><div class="stat-label">Visits</div><div class="stat-value blue">${fmt(g.visits ?? g.visitCount)}</div></div>
+              <div class="stat"><div class="stat-label">Likes</div><div class="stat-value">${fmt(g.totalUpVotes)}</div></div>
+              <div class="stat"><div class="stat-label">Favorites</div><div class="stat-value teal">${fmt(g.favoritedCount)}</div></div>
+            </div>
+          </div>`;
+        card.addEventListener('click', () => window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank'));
+        grid.appendChild(card);
+      });
+    }
+
+    async function load(sortKey) {
+      showSkeletons();
+      try {
+        const games = await fetchGames(sortKey);
+        const ids = games.map(g => g.universeId).filter(Boolean);
+        const thumbs = ids.length ? await fetchThumbs(ids) : {};
+        renderCards(games, thumbs);
+      } catch (err) {
+        console.error(err);
+        document.getElementById('gameGrid').innerHTML = `
+          <div class="error-box">
+            <h2>Couldn't load games</h2>
+            <p>The Roblox API may be blocking the request.<br>Try again in a moment.</p>
+          </div>`;
+      }
+    }
+
+    document.querySelectorAll('.sort-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSort = btn.dataset.sort;
+        load(currentSort);
+      });
+    });
+
+    load(currentSort);
+    setInterval(() => load(currentSort), 60_000);
+  </script>
+</body>
+</html>
