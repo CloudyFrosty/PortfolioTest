@@ -14,7 +14,7 @@
       --accent:  #3a7ff7;
       --accent2: #38e8c6;
       --text:    #edf0ff;
-      --muted:   #b4b6be;
+      --muted:   #6d748d;
       --green:   #3de07a;
       --card-bg: #090b14;
     }
@@ -195,8 +195,6 @@
 
     .card { background:var(--card-bg); cursor:pointer; position:relative; transition:background 0.15s; }
     .card:hover { background:#0f1220; }
-    .card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; z-index:3; background:linear-gradient(90deg,var(--accent),var(--accent2)); opacity:0; transition:opacity 0.2s; }
-    .card:hover::before { opacity:1; }
 
     .card-rank { position:absolute; top:8px; left:8px; z-index:2; font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:1px; padding:2px 8px; border-radius:3px; background:rgba(7,8,15,0.75); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.12); color:var(--text); line-height:1.4; }
 
@@ -313,7 +311,7 @@
 <section class="hero">
   <div class="hero-eyebrow">Real-time leaderboard</div>
   <h1>TOP ROBLOX GAMES <span class="bright">RIGHT NOW</span></h1>
-  <p class="hero-sub">Live player counts, total visits, and favorites — pulled from Rolimons &amp; Roblox.</p>
+  <p class="hero-sub">Live player counts, total visits, and favorites — pulled from Roblox</p>
 </section>
 
 <div class="stats-bar">
