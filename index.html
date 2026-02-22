@@ -30,7 +30,6 @@
       overflow-x: hidden;
     }
 
-    /* grid lines bg */
     body::after {
       content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
       background-image:
@@ -39,7 +38,6 @@
       background-size: 56px 56px;
     }
 
-    /* top glow blob */
     .glow {
       position:fixed; top:-25vh; left:50%; transform:translateX(-50%);
       width:1000px; height:600px; z-index:0; pointer-events:none;
@@ -68,9 +66,7 @@
       position:relative;
     }
 
-    .search-wrap {
-      position:relative; display:flex; align-items:center;
-    }
+    .search-wrap { position:relative; display:flex; align-items:center; }
 
     .search-icon {
       position:absolute; left:12px; color:var(--muted);
@@ -127,6 +123,7 @@
       cursor:pointer; transition:all 0.15s;
     }
     .refresh-btn:hover { border-color:var(--accent); color:var(--accent); }
+    .refresh-btn:disabled { opacity:0.4; cursor:not-allowed; }
 
     /* ── HERO ── */
     .hero {
@@ -151,7 +148,7 @@
       opacity:0; animation:up 0.5s ease 0.1s both;
     }
 
-    .hero h1 .dim { color:rgba(237,240,255,0.22); }
+    .hero h1 .dim    { color:rgba(237,240,255,0.22); }
     .hero h1 .bright { color:var(--accent); }
 
     .hero-sub {
@@ -218,7 +215,6 @@
       border-color:var(--accent); color:var(--accent);
     }
 
-    /* search result count badge */
     .search-count {
       margin-left:auto;
       font-family:'JetBrains Mono',monospace;
@@ -251,7 +247,6 @@
     }
     .card:hover { background:#0f1220; }
 
-    /* glowing top border on hover */
     .card::before {
       content:''; position:absolute; top:0; left:0; right:0;
       height:2px; z-index:3;
@@ -260,7 +255,6 @@
     }
     .card:hover::before { opacity:1; }
 
-    /* rank badge */
     .card-rank {
       position:absolute; top:8px; left:8px; z-index:2;
       font-family:'Bebas Neue',sans-serif;
@@ -272,7 +266,6 @@
       color:var(--text);
       line-height:1.4;
     }
-
 
     .card-thumb-wrap { position:relative; overflow:hidden; background:var(--surface); }
     .card-thumb {
@@ -316,7 +309,7 @@
     .stat-val.blue   { color:#6aaeff; }
     .stat-val.white  { color:var(--text); }
     .stat-val.teal   { color:var(--accent2); }
-    .stat-val.muted  { color:var(--muted); font-style:italic; font-size:0.75rem; }
+    .stat-val.loading { color:var(--muted); font-style:italic; font-size:0.75rem; }
 
     /* ── SKELETON ── */
     .skeleton { background:var(--card-bg); }
@@ -330,7 +323,6 @@
     }
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-    /* no results */
     .no-results {
       grid-column:1/-1; text-align:center; padding:80px 20px; color:var(--muted);
     }
@@ -339,7 +331,6 @@
       letter-spacing:2px; color:var(--text); margin-bottom:8px;
     }
 
-    /* error */
     .error-box { grid-column:1/-1; text-align:center; padding:80px 20px; color:var(--muted); }
     .error-box h2 { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:2px; color:var(--text); margin-bottom:8px; }
     .error-box pre { margin:12px auto 0; font-family:'JetBrains Mono',monospace; font-size:0.7rem; background:var(--surface); border:1px solid var(--border); padding:12px; border-radius:4px; max-width:500px; overflow-x:auto; white-space:pre-wrap; }
@@ -426,45 +417,50 @@
 
 <script>
   const WORKER_URL = 'https://young-resonance-128e.frostyknight2354.workers.dev';
+
   let currentSort = 'TopCharts';
-  let loading = false;
-  let allGames = [];
-  // Map of placeId → {visits, upVotes, favoritedCount} — filled in progressively
+  let loading     = false;
+  let allGames    = [];
+
+  // Cache keyed by placeId → { visits, likes, favorites, likeRatio }
+  // Field names match exactly what the worker returns
   let detailCache = {};
 
-  // ── FORMAT ─────────────────────────────────────────────
+  // ── FORMAT ──────────────────────────────────────────────
   function fmt(n) {
-    if (n == null) return null;
-    if (n >= 1e9) return (n/1e9).toFixed(1)+'B';
-    if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
-    if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
+    if (n == null || n === undefined) return null;
+    n = Number(n);
+    if (isNaN(n)) return null;
+    if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+    if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+    if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
     return n.toLocaleString();
   }
-  function fmtStat(n) { const v = fmt(n); return v !== null ? v : '—'; }
+  const fmtStat = (n) => fmt(n) ?? '—';
 
   function animateCount(el, target) {
     if (!target) { el.textContent = fmtStat(target); return; }
     const duration = 650, t0 = performance.now();
-    function step(now) {
+    const tick = (now) => {
       const p = Math.min((now - t0) / duration, 1);
-      const e = 1 - Math.pow(1-p, 3);
+      const e = 1 - Math.pow(1 - p, 3);
       el.textContent = fmtStat(Math.round(e * target));
-      if (p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   }
 
-  // ── FETCH ──────────────────────────────────────────────
+  // ── FETCH HELPER ────────────────────────────────────────
   async function workerFetch(params) {
     const res = await fetch(WORKER_URL + '?' + new URLSearchParams(params));
-    if (!res.ok) throw new Error(`Worker returned ${res.status}`);
+    if (!res.ok) throw new Error(`Worker ${res.status}: ${await res.text().catch(() => '')}`);
     return res.json();
   }
 
-  // ── SKELETONS ──────────────────────────────────────────
-  function showSkeletons() {
+  // ── SKELETONS ───────────────────────────────────────────
+  function showSkeletons(count = 32) {
     const frag = document.createDocumentFragment();
-    for (let i = 0; i < 32; i++) {
+    for (let i = 0; i < count; i++) {
       const el = document.createElement('div');
       el.className = 'skeleton';
       el.innerHTML = `<div class="skel-thumb"></div><div class="skel-body">
@@ -478,9 +474,52 @@
     grid.appendChild(frag);
   }
 
-  // ── RENDER CARDS ───────────────────────────────────────
+  // ── BUILD CARD HTML ─────────────────────────────────────
+  function buildCardHTML(g, rank) {
+    const safeName = (g.name || 'Unknown').replace(/[<>"']/g, c =>
+      ({ '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])
+    );
+
+    // Worker returns: visits, likes, favorites, likeRatio
+    const detail    = detailCache[g.placeId] || {};
+    const visits    = fmtStat(detail.visits    ?? null);
+    const likes     = fmtStat(detail.likes     ?? null);
+    const favorites = fmtStat(detail.favorites ?? null);
+    const loading   = !detail.visits && detail.visits !== 0;
+
+    return `
+      <div class="card-thumb-wrap">
+        ${g.iconUrl
+          ? `<img class="card-thumb" src="${g.iconUrl}" alt="${safeName}" loading="lazy" decoding="async"/>`
+          : `<div class="card-thumb-placeholder">NO IMG</div>`}
+        <div class="card-rank">#${rank}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name" title="${safeName}">${safeName}</div>
+        <div class="card-stats">
+          <div class="stat">
+            <div class="stat-label">Playing</div>
+            <div class="stat-val green">${fmtStat(g.playerCount)}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Visits</div>
+            <div class="stat-val blue${loading ? ' loading' : ''}" data-field="visits">${loading ? '…' : visits}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Likes</div>
+            <div class="stat-val white${loading ? ' loading' : ''}" data-field="likes">${loading ? '…' : likes}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Favorites</div>
+            <div class="stat-val teal${loading ? ' loading' : ''}" data-field="favorites">${loading ? '…' : favorites}</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ── RENDER CARDS ────────────────────────────────────────
   function renderCards(games) {
-    const grid = document.getElementById('gameGrid');
+    const grid        = document.getElementById('gameGrid');
     const searchCount = document.getElementById('searchCount');
 
     if (!games.length) {
@@ -492,45 +531,22 @@
     const q = document.getElementById('searchInput').value.trim();
     searchCount.textContent = q ? `${games.length} result${games.length !== 1 ? 's' : ''}` : '';
 
-    const total = games.reduce((s,g) => s + (g.playerCount||0), 0);
+    const total = games.reduce((s, g) => s + (g.playerCount || 0), 0);
     animateCount(document.getElementById('totalPlaying'), total);
     document.getElementById('gamesTracked').textContent = allGames.length.toLocaleString();
-    document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
+    document.getElementById('lastUpdated').textContent  = new Date().toLocaleTimeString();
 
     const frag = document.createDocumentFragment();
     games.forEach((g, i) => {
       const card = document.createElement('div');
-      card.className = 'card';
-      card.dataset.placeid = g.rootPlaceId;
+      card.className        = 'card';
+      card.dataset.placeid  = g.placeId;
+      card.innerHTML        = buildCardHTML(g, i + 1);
 
-      const rankClass = i === 0 ? 'top1' : i === 1 ? 'top2' : i === 2 ? 'top3' : '';
-      const safeName = (g.name||'Unknown').replace(/[<>]/g, c => c==='<'?'&lt;':'&gt;');
-
-      // Merge detail cache if available
-      const detail = detailCache[g.rootPlaceId] || {};
-      const visits = fmtStat(detail.visits ?? null);
-      const likes  = fmtStat(detail.upVotes ?? null);
-      const favs   = fmtStat(detail.favoritedCount ?? null);
-
-      card.innerHTML = `
-        <div class="card-thumb-wrap">
-          ${g.iconUrl
-            ? `<img class="card-thumb" src="${g.iconUrl}" alt="${safeName}" loading="lazy" decoding="async"/>`
-            : `<div class="card-thumb-placeholder">NO IMG</div>`}
-          <div class="card-rank ${rankClass}">#${i+1}</div>
-        </div>
-        <div class="card-body">
-          <div class="card-name">${safeName}</div>
-          <div class="card-stats">
-            <div class="stat"><div class="stat-label">Playing</div><div class="stat-val green">${fmtStat(g.playerCount)}</div></div>
-            <div class="stat"><div class="stat-label">Visits</div><div class="stat-val blue" data-field="visits">${visits}</div></div>
-            <div class="stat"><div class="stat-label">Likes</div><div class="stat-val white" data-field="upVotes">${likes}</div></div>
-            <div class="stat"><div class="stat-label">Favorites</div><div class="stat-val teal" data-field="favoritedCount">${favs}</div></div>
-          </div>
-        </div>`;
-
-      if (g.rootPlaceId) {
-        card.addEventListener('click', () => window.open(`https://www.roblox.com/games/${g.rootPlaceId}`, '_blank'));
+      if (g.placeId) {
+        card.addEventListener('click', () =>
+          window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank')
+        );
       }
       frag.appendChild(card);
     });
@@ -539,62 +555,69 @@
     grid.appendChild(frag);
   }
 
-  // ── UPDATE CARD DETAILS IN-PLACE ───────────────────────
-  // Called as each detail batch comes back — updates DOM without re-rendering
+  // ── PATCH CARD DETAILS IN-PLACE ─────────────────────────
+  // Worker returns { placeId: { visits, likes, favorites, likeRatio } }
   function patchCardDetails(details) {
     Object.entries(details).forEach(([placeId, d]) => {
       if (!d) return;
       detailCache[placeId] = d;
+
       const card = document.querySelector(`.card[data-placeid="${placeId}"]`);
       if (!card) return;
+
       const set = (field, val) => {
         const el = card.querySelector(`[data-field="${field}"]`);
-        if (el) el.textContent = fmtStat(val);
+        if (!el) return;
+        el.textContent = fmtStat(val);
+        el.classList.remove('loading');
       };
-      set('visits',         d.visits);
-      set('upVotes',        d.upVotes);
-      set('favoritedCount', d.favoritedCount);
+
+      // Field names match worker output exactly
+      set('visits',    d.visits);
+      set('likes',     d.likes);
+      set('favorites', d.favorites);
     });
   }
 
-  // ── FETCH DETAILS IN BACKGROUND ────────────────────────
-  // Sends games in pages of 100 placeIds so each worker call stays fast
+  // ── PROGRESSIVE DETAIL FETCH ────────────────────────────
   async function fetchDetailsProgressively(games) {
-    const PAGE = 100;
-    const placeIds = games.map(g => g.rootPlaceId).filter(Boolean);
+    const PAGE     = 50; // safer batch size for universe lookup
+    const placeIds = games.map(g => g.placeId).filter(Boolean);
 
     for (let i = 0; i < placeIds.length; i += PAGE) {
       const batch = placeIds.slice(i, i + PAGE);
       try {
         const data = await workerFetch({ action: 'get-details', placeIds: batch.join(',') });
         if (data.details) patchCardDetails(data.details);
-      } catch(err) {
+      } catch (err) {
         console.warn('Detail batch failed:', err.message);
       }
     }
   }
 
-  // ── SEARCH ─────────────────────────────────────────────
+  // ── SEARCH ──────────────────────────────────────────────
   function applySearch() {
     const q = document.getElementById('searchInput').value.trim().toLowerCase();
     document.getElementById('searchClear').classList.toggle('visible', q.length > 0);
     if (!allGames.length) return;
-    renderCards(q ? allGames.filter(g => (g.name||'').toLowerCase().includes(q)) : allGames);
+    renderCards(q ? allGames.filter(g => (g.name || '').toLowerCase().includes(q)) : allGames);
   }
 
-  // ── LOAD ───────────────────────────────────────────────
+  // ── LOAD ────────────────────────────────────────────────
   async function load(sortName) {
     if (loading) return;
     loading = true;
-    detailCache = {}; // clear cache on new load
+    detailCache = {};
+
+    const refreshBtn = document.getElementById('refreshBtn');
+    refreshBtn.disabled = true;
 
     showSkeletons();
 
     try {
-      // Step 1: fast — get game list (just names + player counts + icons)
       const data = await workerFetch({ action: 'get-sort-content', sortId: sortName });
       allGames = data.games || [];
-      if (!allGames.length) throw new Error('No games returned');
+      if (!allGames.length) throw new Error('No games returned from Rolimons');
 
       document.getElementById('searchInput').value = '';
       document.getElementById('searchClear').classList.remove('visible');
@@ -602,11 +625,10 @@
 
       renderCards(allGames);
 
-      // Step 2: slow — fetch visits/likes/favorites in background pages
-      // Don't await — runs independently, patches cards as data arrives
+      // Background detail fetch — patches cards as data arrives
       fetchDetailsProgressively(allGames);
 
-    } catch(err) {
+    } catch (err) {
       console.error(err);
       document.getElementById('gameGrid').innerHTML = `
         <div class="error-box">
@@ -616,10 +638,11 @@
         </div>`;
     } finally {
       loading = false;
+      refreshBtn.disabled = false;
     }
   }
 
-  // ── EVENTS ─────────────────────────────────────────────
+  // ── EVENTS ──────────────────────────────────────────────
   document.querySelectorAll('.sort-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       if (btn.classList.contains('active') || loading) return;
@@ -647,7 +670,7 @@
     document.getElementById('searchInput').focus();
   });
 
-  // ── INIT ───────────────────────────────────────────────
+  // ── INIT ────────────────────────────────────────────────
   load(currentSort);
 </script>
 </body>
