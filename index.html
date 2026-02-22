@@ -56,17 +56,12 @@
 
     .logo {
       font-family:'Bebas Neue', sans-serif;
-      font-size:1.55rem; letter-spacing:3px;
-      color:var(--text);
+      font-size:1.55rem; letter-spacing:3px; color:var(--text);
     }
     .logo em { color:var(--accent); font-style:normal; }
 
-    .header-center {
-      flex:1; max-width:420px; margin:0 40px;
-      position:relative;
-    }
-
-    .search-wrap { position:relative; display:flex; align-items:center; }
+    .header-center { flex:1; max-width:420px; margin:0 40px; }
+    .search-wrap   { position:relative; display:flex; align-items:center; }
 
     .search-icon {
       position:absolute; left:12px; color:var(--muted);
@@ -75,8 +70,8 @@
 
     #searchInput {
       width:100%; background:var(--surface);
-      border:1px solid var(--border);
-      border-radius:6px; padding:8px 12px 8px 36px;
+      border:1px solid var(--border); border-radius:6px;
+      padding:8px 12px 8px 36px;
       color:var(--text); font-family:'Barlow',sans-serif;
       font-size:0.85rem; font-weight:500;
       outline:none; transition: border-color 0.15s, box-shadow 0.15s;
@@ -91,8 +86,7 @@
       position:absolute; right:10px;
       background:none; border:none; color:var(--muted);
       cursor:pointer; font-size:0.9rem; padding:2px 4px;
-      display:none; line-height:1;
-      transition: color 0.15s;
+      display:none; line-height:1; transition: color 0.15s;
     }
     .search-clear:hover { color:var(--text); }
     .search-clear.visible { display:block; }
@@ -103,8 +97,7 @@
       display:flex; align-items:center; gap:6px;
       font-family:'JetBrains Mono', monospace;
       font-size:0.6rem; letter-spacing:1.5px; text-transform:uppercase;
-      color:var(--green);
-      background:rgba(61,224,122,0.07);
+      color:var(--green); background:rgba(61,224,122,0.07);
       border:1px solid rgba(61,224,122,0.18);
       padding:5px 12px; border-radius:4px;
     }
@@ -116,8 +109,7 @@
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
 
     .refresh-btn {
-      background:transparent;
-      border:1px solid var(--border); color:var(--muted);
+      background:transparent; border:1px solid var(--border); color:var(--muted);
       font-family:'JetBrains Mono',monospace;
       font-size:0.68rem; padding:6px 14px; border-radius:4px;
       cursor:pointer; transition:all 0.15s;
@@ -128,27 +120,22 @@
     /* ── HERO ── */
     .hero {
       position:relative; z-index:1;
-      padding:72px 48px 36px;
-      max-width:1500px; margin:0 auto;
+      padding:72px 48px 36px; max-width:1500px; margin:0 auto;
     }
 
     .hero-eyebrow {
       font-family:'JetBrains Mono',monospace;
       font-size:0.65rem; color:var(--accent);
-      letter-spacing:3px; text-transform:uppercase;
-      margin-bottom:14px;
+      letter-spacing:3px; text-transform:uppercase; margin-bottom:14px;
       opacity:0; animation:up 0.5s ease 0.05s both;
     }
 
     .hero h1 {
       font-family:'Bebas Neue',sans-serif;
       font-size: clamp(3.8rem, 8.5vw, 7.5rem);
-      line-height:0.9; letter-spacing:3px;
-      margin-bottom:22px;
+      line-height:0.9; letter-spacing:3px; margin-bottom:22px;
       opacity:0; animation:up 0.5s ease 0.1s both;
     }
-
-    .hero h1 .dim    { color:rgba(237,240,255,0.22); }
     .hero h1 .bright { color:var(--accent); }
 
     .hero-sub {
@@ -162,7 +149,7 @@
       to   { opacity:1; transform:translateY(0); }
     }
 
-    /* ── STATS ROW ── */
+    /* ── STATS BAR ── */
     .stats-bar {
       position:relative; z-index:1;
       max-width:1500px; margin:0 auto;
@@ -172,8 +159,7 @@
     }
 
     .stat-pill {
-      background:var(--surface); border:1px solid var(--border);
-      padding:11px 22px;
+      background:var(--surface); border:1px solid var(--border); padding:11px 22px;
     }
     .stat-pill:first-child { border-radius:6px 0 0 6px; }
     .stat-pill:last-child  { border-radius:0 6px 6px 0; }
@@ -210,12 +196,9 @@
       cursor:pointer; transition:all 0.15s;
     }
     .sort-btn:hover { border-color:rgba(79,142,247,0.45); color:var(--text); }
-    .sort-btn.active {
-      background:rgba(79,142,247,0.15);
-      border-color:var(--accent); color:var(--accent);
-    }
+    .sort-btn.active { background:rgba(79,142,247,0.15); border-color:var(--accent); color:var(--accent); }
 
-    .search-count {
+    .result-count {
       margin-left:auto;
       font-family:'JetBrains Mono',monospace;
       font-size:0.62rem; color:var(--muted); letter-spacing:1px;
@@ -225,7 +208,7 @@
     .grid-wrap {
       position:relative; z-index:1;
       max-width:1500px; margin:0 auto;
-      padding:0 48px 80px;
+      padding:0 48px 40px;
     }
 
     .grid {
@@ -243,7 +226,6 @@
       background:var(--card-bg);
       cursor:pointer; position:relative;
       transition: background 0.15s;
-      contain: layout style;
     }
     .card:hover { background:#0f1220; }
 
@@ -263,8 +245,7 @@
       background:rgba(7,8,15,0.75);
       backdrop-filter:blur(6px);
       border:1px solid rgba(255,255,255,0.12);
-      color:var(--text);
-      line-height:1.4;
+      color:var(--text); line-height:1.4;
     }
 
     .card-thumb-wrap { position:relative; overflow:hidden; background:var(--surface); }
@@ -309,7 +290,30 @@
     .stat-val.blue   { color:#6aaeff; }
     .stat-val.white  { color:var(--text); }
     .stat-val.teal   { color:var(--accent2); }
-    .stat-val.loading { color:var(--muted); font-style:italic; font-size:0.75rem; }
+    .stat-val.pending { color:var(--muted); font-size:0.78rem; }
+
+    /* ── LOAD MORE ── */
+    .load-more-wrap {
+      position:relative; z-index:1;
+      max-width:1500px; margin:0 auto;
+      padding:16px 48px 80px;
+      display:flex; align-items:center; justify-content:center; gap:16px;
+    }
+
+    .load-more-btn {
+      background:var(--surface); border:1px solid var(--border);
+      color:var(--text); font-family:'Barlow',sans-serif;
+      font-size:0.85rem; font-weight:600;
+      padding:11px 32px; border-radius:6px;
+      cursor:pointer; transition:all 0.15s;
+    }
+    .load-more-btn:hover { border-color:var(--accent); color:var(--accent); }
+    .load-more-btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+    .load-more-info {
+      font-family:'JetBrains Mono',monospace;
+      font-size:0.6rem; color:var(--muted); letter-spacing:1px;
+    }
 
     /* ── SKELETON ── */
     .skeleton { background:var(--card-bg); }
@@ -323,13 +327,8 @@
     }
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-    .no-results {
-      grid-column:1/-1; text-align:center; padding:80px 20px; color:var(--muted);
-    }
-    .no-results h3 {
-      font-family:'Bebas Neue',sans-serif; font-size:1.8rem;
-      letter-spacing:2px; color:var(--text); margin-bottom:8px;
-    }
+    .no-results { grid-column:1/-1; text-align:center; padding:80px 20px; color:var(--muted); }
+    .no-results h3 { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:2px; color:var(--text); margin-bottom:8px; }
 
     .error-box { grid-column:1/-1; text-align:center; padding:80px 20px; color:var(--muted); }
     .error-box h2 { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:2px; color:var(--text); margin-bottom:8px; }
@@ -350,7 +349,7 @@
     @media(max-width:640px) {
       header { padding:0 16px; flex-wrap:wrap; height:auto; gap:10px; padding-top:10px; padding-bottom:10px; }
       .header-center { max-width:100%; margin:0; order:3; width:100%; }
-      .hero, .stats-bar, .toolbar, .grid-wrap { padding-left:16px; padding-right:16px; }
+      .hero, .stats-bar, .toolbar, .grid-wrap, .load-more-wrap { padding-left:16px; padding-right:16px; }
       .hero h1 { font-size:3.2rem; }
       .grid { grid-template-columns:repeat(2,1fr); }
     }
@@ -367,7 +366,7 @@
     <div class="search-wrap">
       <span class="search-icon">⌕</span>
       <input type="text" id="searchInput" placeholder="Search games…" autocomplete="off" spellcheck="false"/>
-      <button class="search-clear" id="searchClear" title="Clear search">✕</button>
+      <button class="search-clear" id="searchClear" title="Clear">✕</button>
     </div>
   </div>
 
@@ -379,10 +378,7 @@
 
 <section class="hero">
   <div class="hero-eyebrow">Real-time leaderboard</div>
-  <h1>
-    TOP ROBLOX<br>
-    GAMES <span class="bright">RIGHT NOW</span>
-  </h1>
+  <h1>TOP ROBLOX GAMES <span class="bright">RIGHT NOW</span></h1>
   <p class="hero-sub">Live player counts, total visits, and favorites — pulled from Rolimons &amp; Roblox.</p>
 </section>
 
@@ -406,29 +402,36 @@
   <button class="sort-btn active" data-sort="TopCharts">Top Charts</button>
   <button class="sort-btn" data-sort="MostEngaging">Most Engaging</button>
   <button class="sort-btn" data-sort="UpAndComing">Up &amp; Coming</button>
-  <span class="search-count" id="searchCount"></span>
+  <span class="result-count" id="resultCount"></span>
 </div>
 
 <div class="grid-wrap">
   <div class="grid" id="gameGrid"></div>
 </div>
 
+<div class="load-more-wrap" id="loadMoreWrap" style="display:none">
+  <button class="load-more-btn" id="loadMoreBtn">Load More</button>
+  <span class="load-more-info" id="loadMoreInfo"></span>
+</div>
+
 <footer>RobloxCharts — not affiliated with Roblox Corporation · Data via Rolimons &amp; Roblox public API</footer>
 
 <script>
-  const WORKER_URL = 'https://young-resonance-128e.frostyknight2354.workers.dev';
+  const WORKER_URL  = 'https://young-resonance-128e.frostyknight2354.workers.dev';
+  const PAGE_SIZE   = 100;  // cards rendered per page
+  const DETAIL_BATCH = 50;  // placeIds per worker detail call
 
-  let currentSort = 'TopCharts';
-  let loading     = false;
-  let allGames    = [];
-
-  // Cache keyed by placeId → { visits, likes, favorites, likeRatio }
-  // Field names match exactly what the worker returns
-  let detailCache = {};
+  let currentSort   = 'TopCharts';
+  let loading       = false;
+  let allGames      = [];      // full sorted list
+  let visibleGames  = [];      // currently filtered/searched list
+  let renderedCount = 0;       // how many cards are in the DOM
+  let detailCache   = {};      // placeId → { visits, likes, favorites, likeRatio }
+  let detailAbort   = null;    // AbortController for in-flight detail fetches
 
   // ── FORMAT ──────────────────────────────────────────────
   function fmt(n) {
-    if (n == null || n === undefined) return null;
+    if (n == null) return null;
     n = Number(n);
     if (isNaN(n)) return null;
     if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
@@ -436,31 +439,124 @@
     if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
     return n.toLocaleString();
   }
-  const fmtStat = (n) => fmt(n) ?? '—';
+  const fmtStat = n => fmt(n) ?? '—';
 
   function animateCount(el, target) {
     if (!target) { el.textContent = fmtStat(target); return; }
-    const duration = 650, t0 = performance.now();
-    const tick = (now) => {
-      const p = Math.min((now - t0) / duration, 1);
-      const e = 1 - Math.pow(1 - p, 3);
-      el.textContent = fmtStat(Math.round(e * target));
+    const dur = 650, t0 = performance.now();
+    const tick = now => {
+      const p = Math.min((now - t0) / dur, 1);
+      el.textContent = fmtStat(Math.round((1 - Math.pow(1 - p, 3)) * target));
       if (p < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
   }
 
-  // ── FETCH HELPER ────────────────────────────────────────
-  async function workerFetch(params) {
-    const res = await fetch(WORKER_URL + '?' + new URLSearchParams(params));
-    if (!res.ok) throw new Error(`Worker ${res.status}: ${await res.text().catch(() => '')}`);
+  // ── WORKER FETCH ────────────────────────────────────────
+  async function workerFetch(params, signal) {
+    const res = await fetch(WORKER_URL + '?' + new URLSearchParams(params), { signal });
+    if (!res.ok) throw new Error(`Worker ${res.status}`);
     return res.json();
   }
 
-  // ── SKELETONS ───────────────────────────────────────────
-  function showSkeletons(count = 32) {
+  // ── ESCAPE HTML ─────────────────────────────────────────
+  const escHtml = s => s.replace(/[<>"'&]/g, c =>
+    ({ '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;', '&':'&amp;' }[c])
+  );
+
+  // ── BUILD ONE CARD ELEMENT ───────────────────────────────
+  function buildCard(g, rank) {
+    const card      = document.createElement('div');
+    card.className  = 'card';
+    card.dataset.placeid = g.placeId;
+
+    const name   = escHtml(g.name || 'Unknown');
+    const detail = detailCache[g.placeId];
+    const loaded = !!detail;
+
+    const statVal = (v, cls) =>
+      `<div class="stat-val ${loaded ? cls : 'pending'}" data-field="${v}">${loaded ? fmtStat(detail[v]) : '…'}</div>`;
+
+    card.innerHTML = `
+      <div class="card-thumb-wrap">
+        ${g.iconUrl
+          ? `<img class="card-thumb" src="${g.iconUrl}" alt="${name}" loading="lazy" decoding="async"/>`
+          : `<div class="card-thumb-placeholder">NO IMG</div>`}
+        <div class="card-rank">#${rank}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name" title="${name}">${name}</div>
+        <div class="card-stats">
+          <div class="stat"><div class="stat-label">Playing</div><div class="stat-val green">${fmtStat(g.playerCount)}</div></div>
+          <div class="stat"><div class="stat-label">Visits</div>${statVal('visits','blue')}</div>
+          <div class="stat"><div class="stat-label">Likes</div>${statVal('likes','white')}</div>
+          <div class="stat"><div class="stat-label">Favorites</div>${statVal('favorites','teal')}</div>
+        </div>
+      </div>`;
+
+    card.addEventListener('click', () =>
+      window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank')
+    );
+    return card;
+  }
+
+  // ── APPEND NEXT PAGE OF CARDS ───────────────────────────
+  function appendCards(games, startRank) {
+    const grid = document.getElementById('gameGrid');
     const frag = document.createDocumentFragment();
-    for (let i = 0; i < count; i++) {
+    games.forEach((g, i) => frag.appendChild(buildCard(g, startRank + i)));
+    grid.appendChild(frag);
+  }
+
+  // ── PATCH DETAIL FIELDS IN-PLACE ────────────────────────
+  function patchCardDetails(details) {
+    Object.entries(details).forEach(([placeId, d]) => {
+      if (!d) return;
+      detailCache[placeId] = d;
+      const card = document.querySelector(`.card[data-placeid="${placeId}"]`);
+      if (!card) return;
+      const fields = { visits:'blue', likes:'white', favorites:'teal' };
+      Object.entries(fields).forEach(([field, cls]) => {
+        const el = card.querySelector(`[data-field="${field}"]`);
+        if (!el) return;
+        el.textContent = fmtStat(d[field]);
+        el.className   = `stat-val ${cls}`;
+      });
+    });
+  }
+
+  // ── FETCH DETAILS PROGRESSIVELY ─────────────────────────
+  async function fetchDetails(games, signal) {
+    const ids = games.map(g => g.placeId).filter(Boolean);
+    for (let i = 0; i < ids.length; i += DETAIL_BATCH) {
+      if (signal?.aborted) return;
+      const batch = ids.slice(i, i + DETAIL_BATCH);
+      try {
+        const data = await workerFetch(
+          { action: 'get-details', placeIds: batch.join(',') },
+          signal
+        );
+        if (data.details) patchCardDetails(data.details);
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+        console.warn('Detail batch failed:', err.message);
+      }
+    }
+  }
+
+  // ── UPDATE HEADER STATS ─────────────────────────────────
+  function updateStats(games) {
+    const total = games.reduce((s, g) => s + (g.playerCount || 0), 0);
+    animateCount(document.getElementById('totalPlaying'), total);
+    document.getElementById('gamesTracked').textContent = allGames.length.toLocaleString();
+    document.getElementById('lastUpdated').textContent  = new Date().toLocaleTimeString();
+  }
+
+  // ── SHOW SKELETONS ──────────────────────────────────────
+  function showSkeletons() {
+    const grid = document.getElementById('gameGrid');
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < 40; i++) {
       const el = document.createElement('div');
       el.className = 'skeleton';
       el.innerHTML = `<div class="skel-thumb"></div><div class="skel-body">
@@ -469,148 +565,91 @@
         <div class="skel-line" style="width:50%"></div></div>`;
       frag.appendChild(el);
     }
-    const grid = document.getElementById('gameGrid');
     grid.innerHTML = '';
     grid.appendChild(frag);
+    document.getElementById('loadMoreWrap').style.display = 'none';
   }
 
-  // ── BUILD CARD HTML ─────────────────────────────────────
-  function buildCardHTML(g, rank) {
-    const safeName = (g.name || 'Unknown').replace(/[<>"']/g, c =>
-      ({ '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])
-    );
+  // ── RENDER VISIBLE LIST (first page) ────────────────────
+  function renderList(games) {
+    visibleGames  = games;
+    renderedCount = 0;
 
-    // Worker returns: visits, likes, favorites, likeRatio
-    const detail    = detailCache[g.placeId] || {};
-    const visits    = fmtStat(detail.visits    ?? null);
-    const likes     = fmtStat(detail.likes     ?? null);
-    const favorites = fmtStat(detail.favorites ?? null);
-    const loading   = !detail.visits && detail.visits !== 0;
-
-    return `
-      <div class="card-thumb-wrap">
-        ${g.iconUrl
-          ? `<img class="card-thumb" src="${g.iconUrl}" alt="${safeName}" loading="lazy" decoding="async"/>`
-          : `<div class="card-thumb-placeholder">NO IMG</div>`}
-        <div class="card-rank">#${rank}</div>
-      </div>
-      <div class="card-body">
-        <div class="card-name" title="${safeName}">${safeName}</div>
-        <div class="card-stats">
-          <div class="stat">
-            <div class="stat-label">Playing</div>
-            <div class="stat-val green">${fmtStat(g.playerCount)}</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Visits</div>
-            <div class="stat-val blue${loading ? ' loading' : ''}" data-field="visits">${loading ? '…' : visits}</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Likes</div>
-            <div class="stat-val white${loading ? ' loading' : ''}" data-field="likes">${loading ? '…' : likes}</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Favorites</div>
-            <div class="stat-val teal${loading ? ' loading' : ''}" data-field="favorites">${loading ? '…' : favorites}</div>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  // ── RENDER CARDS ────────────────────────────────────────
-  function renderCards(games) {
-    const grid        = document.getElementById('gameGrid');
-    const searchCount = document.getElementById('searchCount');
+    const grid = document.getElementById('gameGrid');
+    grid.innerHTML = '';
 
     if (!games.length) {
       grid.innerHTML = `<div class="no-results"><h3>No Results</h3><p>Try a different search term.</p></div>`;
-      searchCount.textContent = '';
+      document.getElementById('loadMoreWrap').style.display = 'none';
+      document.getElementById('resultCount').textContent = '';
       return;
     }
 
+    // First page
+    const firstPage = games.slice(0, PAGE_SIZE);
+    appendCards(firstPage, 1);
+    renderedCount = firstPage.length;
+
+    updateStats(games);
+    updateLoadMore();
+
     const q = document.getElementById('searchInput').value.trim();
-    searchCount.textContent = q ? `${games.length} result${games.length !== 1 ? 's' : ''}` : '';
-
-    const total = games.reduce((s, g) => s + (g.playerCount || 0), 0);
-    animateCount(document.getElementById('totalPlaying'), total);
-    document.getElementById('gamesTracked').textContent = allGames.length.toLocaleString();
-    document.getElementById('lastUpdated').textContent  = new Date().toLocaleTimeString();
-
-    const frag = document.createDocumentFragment();
-    games.forEach((g, i) => {
-      const card = document.createElement('div');
-      card.className        = 'card';
-      card.dataset.placeid  = g.placeId;
-      card.innerHTML        = buildCardHTML(g, i + 1);
-
-      if (g.placeId) {
-        card.addEventListener('click', () =>
-          window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank')
-        );
-      }
-      frag.appendChild(card);
-    });
-
-    grid.innerHTML = '';
-    grid.appendChild(frag);
+    document.getElementById('resultCount').textContent =
+      q ? `${games.length} result${games.length !== 1 ? 's' : ''}` : `${games.length.toLocaleString()} games`;
   }
 
-  // ── PATCH CARD DETAILS IN-PLACE ─────────────────────────
-  // Worker returns { placeId: { visits, likes, favorites, likeRatio } }
-  function patchCardDetails(details) {
-    Object.entries(details).forEach(([placeId, d]) => {
-      if (!d) return;
-      detailCache[placeId] = d;
+  // ── LOAD MORE ────────────────────────────────────────────
+  function updateLoadMore() {
+    const wrap = document.getElementById('loadMoreWrap');
+    const btn  = document.getElementById('loadMoreBtn');
+    const info = document.getElementById('loadMoreInfo');
+    const remaining = visibleGames.length - renderedCount;
 
-      const card = document.querySelector(`.card[data-placeid="${placeId}"]`);
-      if (!card) return;
-
-      const set = (field, val) => {
-        const el = card.querySelector(`[data-field="${field}"]`);
-        if (!el) return;
-        el.textContent = fmtStat(val);
-        el.classList.remove('loading');
-      };
-
-      // Field names match worker output exactly
-      set('visits',    d.visits);
-      set('likes',     d.likes);
-      set('favorites', d.favorites);
-    });
-  }
-
-  // ── PROGRESSIVE DETAIL FETCH ────────────────────────────
-  async function fetchDetailsProgressively(games) {
-    const PAGE     = 50; // safer batch size for universe lookup
-    const placeIds = games.map(g => g.placeId).filter(Boolean);
-
-    for (let i = 0; i < placeIds.length; i += PAGE) {
-      const batch = placeIds.slice(i, i + PAGE);
-      try {
-        const data = await workerFetch({ action: 'get-details', placeIds: batch.join(',') });
-        if (data.details) patchCardDetails(data.details);
-      } catch (err) {
-        console.warn('Detail batch failed:', err.message);
-      }
+    if (remaining <= 0) {
+      wrap.style.display = 'none';
+      return;
     }
+
+    wrap.style.display = 'flex';
+    btn.disabled = false;
+    info.textContent = `${renderedCount.toLocaleString()} of ${visibleGames.length.toLocaleString()} shown`;
   }
+
+  document.getElementById('loadMoreBtn').addEventListener('click', () => {
+    const next = visibleGames.slice(renderedCount, renderedCount + PAGE_SIZE);
+    appendCards(next, renderedCount + 1);
+    renderedCount += next.length;
+    updateLoadMore();
+
+    // Fetch details for the newly rendered cards
+    if (detailAbort && !detailAbort.signal.aborted) {
+      // already running — cache will patch when it catches up
+    } else {
+      fetchDetails(next, null);
+    }
+  });
 
   // ── SEARCH ──────────────────────────────────────────────
   function applySearch() {
     const q = document.getElementById('searchInput').value.trim().toLowerCase();
     document.getElementById('searchClear').classList.toggle('visible', q.length > 0);
     if (!allGames.length) return;
-    renderCards(q ? allGames.filter(g => (g.name || '').toLowerCase().includes(q)) : allGames);
+    renderList(q ? allGames.filter(g => (g.name || '').toLowerCase().includes(q)) : allGames);
   }
 
-  // ── LOAD ────────────────────────────────────────────────
+  // ── MAIN LOAD ────────────────────────────────────────────
   async function load(sortName) {
     if (loading) return;
     loading = true;
+
+    // Cancel any in-flight detail fetches
+    if (detailAbort) detailAbort.abort();
+    detailAbort = new AbortController();
     detailCache = {};
 
     const refreshBtn = document.getElementById('refreshBtn');
     refreshBtn.disabled = true;
+    document.querySelectorAll('.sort-btn').forEach(b => b.disabled = true);
 
     showSkeletons();
 
@@ -619,26 +658,29 @@
       allGames = data.games || [];
       if (!allGames.length) throw new Error('No games returned from Rolimons');
 
+      // Clear search
       document.getElementById('searchInput').value = '';
       document.getElementById('searchClear').classList.remove('visible');
-      document.getElementById('searchCount').textContent = '';
 
-      renderCards(allGames);
+      renderList(allGames);
 
-      // Background detail fetch — patches cards as data arrives
-      fetchDetailsProgressively(allGames);
+      // Background: fetch details for ALL games progressively
+      // Cards update in-place as data arrives
+      fetchDetails(allGames, detailAbort.signal);
 
     } catch (err) {
+      if (err.name === 'AbortError') return;
       console.error(err);
       document.getElementById('gameGrid').innerHTML = `
         <div class="error-box">
           <h2>Couldn't Load Games</h2>
           <p>Something went wrong fetching data.</p>
-          <pre>${err.message}</pre>
+          <pre>${escHtml(err.message)}</pre>
         </div>`;
     } finally {
       loading = false;
       refreshBtn.disabled = false;
+      document.querySelectorAll('.sort-btn').forEach(b => b.disabled = false);
     }
   }
 
@@ -660,13 +702,13 @@
   let searchTimer;
   document.getElementById('searchInput').addEventListener('input', () => {
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(applySearch, 120);
+    searchTimer = setTimeout(applySearch, 150);
   });
 
   document.getElementById('searchClear').addEventListener('click', () => {
     document.getElementById('searchInput').value = '';
     document.getElementById('searchClear').classList.remove('visible');
-    renderCards(allGames);
+    renderList(allGames);
     document.getElementById('searchInput').focus();
   });
 
