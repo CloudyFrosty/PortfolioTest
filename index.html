@@ -18,57 +18,141 @@
       --green:   #3de07a;
       --card-bg: #090b14;
     }
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { background:var(--bg); color:var(--text); font-family:'Barlow',sans-serif; min-height:100vh; overflow-x:hidden; }
-    body::after { content:''; position:fixed; inset:0; z-index:0; pointer-events:none; background-image:linear-gradient(rgba(79,142,247,0.028) 1px,transparent 1px),linear-gradient(90deg,rgba(79,142,247,0.028) 1px,transparent 1px); background-size:56px 56px; }
-    .glow { position:fixed; top:-25vh; left:50%; transform:translateX(-50%); width:1000px; height:600px; z-index:0; pointer-events:none; background:radial-gradient(ellipse,rgba(79,142,247,0.09) 0%,transparent 65%); }
 
-    /* HEADER */
-    header { position:sticky; top:0; z-index:200; background:rgba(7,8,15,0.82); backdrop-filter:blur(24px); border-bottom:1px solid var(--border); height:62px; padding:0 48px; display:flex; align-items:center; justify-content:space-between; }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::after {
+      content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+      background-image:
+        linear-gradient(rgba(79,142,247,0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,142,247,0.028) 1px, transparent 1px);
+      background-size: 56px 56px;
+    }
+
+    .glow {
+      position:fixed; top:-25vh; left:50%; transform:translateX(-50%);
+      width:1000px; height:600px; z-index:0; pointer-events:none;
+      background: radial-gradient(ellipse, rgba(79,142,247,0.09) 0%, transparent 65%);
+    }
+
+    header {
+      position:sticky; top:0; z-index:200;
+      background: rgba(7,8,15,0.82);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      height:62px; padding:0 48px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+
     .logo { font-family:'Bebas Neue',sans-serif; font-size:1.55rem; letter-spacing:3px; color:var(--text); }
     .logo em { color:var(--accent); font-style:normal; }
+
     .header-center { flex:1; max-width:520px; margin:0 40px; }
-    .search-wrap { position:relative; display:flex; align-items:center; gap:6px; }
+    .search-wrap   { position:relative; display:flex; align-items:center; gap:6px; }
     .search-input-wrap { position:relative; flex:1; }
-    .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:0.9rem; pointer-events:none; }
-    #searchInput { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:8px 32px 8px 36px; color:var(--text); font-family:'Barlow',sans-serif; font-size:0.85rem; font-weight:500; outline:none; transition:border-color 0.15s,box-shadow 0.15s; }
+    .search-icon { position:absolute; left:12px; color:var(--muted); font-size:0.9rem; pointer-events:none; line-height:1; top:50%; transform:translateY(-50%); }
+
+    #searchInput {
+      width:100%; background:var(--surface);
+      border:1px solid var(--border); border-radius:6px;
+      padding:8px 32px 8px 36px;
+      color:var(--text); font-family:'Barlow',sans-serif;
+      font-size:0.85rem; font-weight:500;
+      outline:none; transition: border-color 0.15s, box-shadow 0.15s;
+    }
     #searchInput::placeholder { color:var(--muted); }
-    #searchInput:focus { border-color:rgba(79,142,247,0.5); box-shadow:0 0 0 3px rgba(79,142,247,0.08); }
-    .search-clear { position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.9rem; padding:2px 4px; display:none; transition:color 0.15s; }
+    #searchInput:focus { border-color:rgba(79,142,247,0.5); box-shadow: 0 0 0 3px rgba(79,142,247,0.08); }
+
+    .search-clear {
+      position:absolute; right:10px; top:50%; transform:translateY(-50%);
+      background:none; border:none; color:var(--muted);
+      cursor:pointer; font-size:0.9rem; padding:2px 4px; display:none; line-height:1; transition:color 0.15s;
+    }
     .search-clear:hover { color:var(--text); }
     .search-clear.visible { display:block; }
-    #lookupBtn { flex-shrink:0; background:rgba(79,142,247,0.12); border:1px solid rgba(79,142,247,0.35); color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:0.65rem; padding:8px 14px; border-radius:6px; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+
+    #lookupBtn {
+      flex-shrink:0;
+      background:rgba(79,142,247,0.12); border:1px solid rgba(79,142,247,0.35); color:var(--accent);
+      font-family:'JetBrains Mono',monospace; font-size:0.65rem; font-weight:500;
+      letter-spacing:0.5px; padding:8px 14px; border-radius:6px;
+      cursor:pointer; transition:all 0.15s; white-space:nowrap;
+    }
     #lookupBtn:hover { background:rgba(79,142,247,0.22); border-color:var(--accent); }
+
     .header-right { display:flex; align-items:center; gap:10px; }
-    .live-badge { display:flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--green); background:rgba(61,224,122,0.07); border:1px solid rgba(61,224,122,0.18); padding:5px 12px; border-radius:4px; }
+
+    .live-badge {
+      display:flex; align-items:center; gap:6px;
+      font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:1.5px; text-transform:uppercase;
+      color:var(--green); background:rgba(61,224,122,0.07); border:1px solid rgba(61,224,122,0.18);
+      padding:5px 12px; border-radius:4px;
+    }
     .live-dot { width:5px; height:5px; border-radius:50%; background:var(--green); animation:blink 1.8s ease-in-out infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
-    .refresh-btn { background:transparent; border:1px solid var(--border); color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.68rem; padding:6px 14px; border-radius:4px; cursor:pointer; transition:all 0.15s; }
+
+    .refresh-btn {
+      background:transparent; border:1px solid var(--border); color:var(--muted);
+      font-family:'JetBrains Mono',monospace; font-size:0.68rem; padding:6px 14px; border-radius:4px;
+      cursor:pointer; transition:all 0.15s;
+    }
     .refresh-btn:hover { border-color:var(--accent); color:var(--accent); }
     .refresh-btn:disabled { opacity:0.4; cursor:not-allowed; }
 
-    /* MODAL */
-    .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+    .modal-overlay {
+      position:fixed; inset:0; z-index:500;
+      background:rgba(0,0,0,0.7); backdrop-filter:blur(8px);
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; pointer-events:none; transition:opacity 0.2s;
+    }
     .modal-overlay.open { opacity:1; pointer-events:all; }
-    .modal { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:32px; width:100%; max-width:460px; transform:translateY(12px); transition:transform 0.2s; position:relative; }
+
+    .modal {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:10px; padding:32px; width:100%; max-width:460px;
+      transform:translateY(12px); transition:transform 0.2s;
+      position:relative;
+    }
     .modal-overlay.open .modal { transform:translateY(0); }
+
     .modal-title { font-family:'Bebas Neue',sans-serif; font-size:1.6rem; letter-spacing:2px; color:var(--text); margin-bottom:6px; }
     .modal-sub { font-family:'JetBrains Mono',monospace; font-size:0.62rem; color:var(--muted); letter-spacing:1px; margin-bottom:22px; line-height:1.6; }
-    .modal-input-row { display:flex; gap:8px; margin-bottom:12px; }
-    #placeIdInput { flex:1; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:10px 14px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:0.85rem; outline:none; transition:border-color 0.15s,box-shadow 0.15s; }
+
+    .modal-input-row { display:flex; gap:8px; margin-bottom:16px; }
+
+    #placeIdInput {
+      flex:1; background:var(--bg); border:1px solid var(--border); border-radius:6px;
+      padding:10px 14px; color:var(--text); font-family:'JetBrains Mono',monospace;
+      font-size:0.85rem; outline:none; transition:border-color 0.15s, box-shadow 0.15s;
+    }
     #placeIdInput::placeholder { color:var(--muted); }
     #placeIdInput:focus { border-color:rgba(79,142,247,0.5); box-shadow:0 0 0 3px rgba(79,142,247,0.08); }
-    #placeIdSubmit { background:var(--accent); border:none; color:#fff; font-family:'Barlow',sans-serif; font-size:0.85rem; font-weight:700; padding:10px 20px; border-radius:6px; cursor:pointer; transition:opacity 0.15s; white-space:nowrap; }
+
+    #placeIdSubmit {
+      background:var(--accent); border:none; color:#fff;
+      font-family:'Barlow',sans-serif; font-size:0.85rem; font-weight:700;
+      padding:10px 20px; border-radius:6px; cursor:pointer; transition:opacity 0.15s; white-space:nowrap;
+    }
     #placeIdSubmit:hover { opacity:0.85; }
     #placeIdSubmit:disabled { opacity:0.4; cursor:not-allowed; }
-    .modal-hint { font-family:'JetBrains Mono',monospace; font-size:0.58rem; color:var(--muted); margin-bottom:20px; line-height:1.7; }
+
+    .modal-hint { font-family:'JetBrains Mono',monospace; font-size:0.58rem; color:var(--muted); letter-spacing:0.5px; margin-bottom:20px; line-height:1.7; }
     .modal-hint code { color:var(--accent2); background:rgba(56,232,198,0.08); padding:1px 5px; border-radius:3px; }
+
     .lookup-result { background:var(--bg); border:1px solid var(--border); border-radius:8px; overflow:hidden; display:none; }
     .lookup-result.visible { display:block; }
-    .lookup-result-inner { display:flex; }
-    .lookup-thumb { width:100px; height:100px; object-fit:cover; display:block; flex-shrink:0; }
-    .lookup-thumb-placeholder { width:100px; height:100px; background:var(--surface); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:0.5rem; color:var(--muted); flex-shrink:0; }
+    .lookup-result-inner { display:flex; gap:0; align-items:stretch; }
+    .lookup-thumb { width:100px; height:100px; object-fit:cover; flex-shrink:0; display:block; }
+    .lookup-thumb-placeholder { width:100px; height:100px; background:var(--surface); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:0.5rem; color:var(--muted); }
     .lookup-info { padding:14px 16px; flex:1; min-width:0; }
     .lookup-name { font-family:'Barlow Condensed',sans-serif; font-size:1.05rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:8px; }
     .lookup-stats { display:flex; gap:12px; flex-wrap:wrap; }
@@ -76,14 +160,15 @@
     .lookup-stat span { color:var(--text); font-weight:600; display:block; font-size:0.82rem; font-family:'Barlow Condensed',sans-serif; }
     .lookup-open-btn { display:block; width:100%; background:rgba(79,142,247,0.1); border:none; border-top:1px solid var(--border); color:var(--accent); font-family:'Barlow',sans-serif; font-size:0.8rem; font-weight:600; padding:10px; cursor:pointer; transition:background 0.15s; }
     .lookup-open-btn:hover { background:rgba(79,142,247,0.2); }
+
     .lookup-error { font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:#ff6b6b; background:rgba(255,107,107,0.08); border:1px solid rgba(255,107,107,0.2); border-radius:5px; padding:10px 14px; display:none; }
     .lookup-error.visible { display:block; }
     .lookup-loading { font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--muted); text-align:center; padding:16px; display:none; }
     .lookup-loading.visible { display:block; }
-    .modal-close { position:absolute; top:16px; right:16px; background:none; border:none; color:var(--muted); font-size:1.1rem; cursor:pointer; transition:color 0.15s; padding:4px; }
+
+    .modal-close { position:absolute; top:16px; right:16px; background:none; border:none; color:var(--muted); font-size:1.1rem; cursor:pointer; transition:color 0.15s; line-height:1; padding:4px; }
     .modal-close:hover { color:var(--text); }
 
-    /* HERO */
     .hero { position:relative; z-index:1; padding:72px 48px 36px; max-width:1500px; margin:0 auto; }
     .hero-eyebrow { font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--accent); letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; opacity:0; animation:up 0.5s ease 0.05s both; }
     .hero h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(3.8rem,8.5vw,7.5rem); line-height:0.9; letter-spacing:3px; margin-bottom:22px; opacity:0; animation:up 0.5s ease 0.1s both; }
@@ -91,7 +176,6 @@
     .hero-sub { color:var(--muted); font-size:0.92rem; font-weight:500; max-width:420px; line-height:1.75; opacity:0; animation:up 0.5s ease 0.15s both; }
     @keyframes up { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 
-    /* STATS BAR */
     .stats-bar { position:relative; z-index:1; max-width:1500px; margin:0 auto; padding:0 48px 30px; display:flex; gap:2px; opacity:0; animation:up 0.5s ease 0.2s both; }
     .stat-pill { background:var(--surface); border:1px solid var(--border); padding:11px 22px; }
     .stat-pill:first-child { border-radius:6px 0 0 6px; }
@@ -99,42 +183,41 @@
     .stat-pill-label { font-family:'JetBrains Mono',monospace; font-size:0.55rem; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:2px; }
     .stat-pill-val   { font-family:'Barlow Condensed',sans-serif; font-size:1.25rem; font-weight:700; color:var(--text); letter-spacing:1px; }
 
-    /* TOOLBAR */
     .toolbar { position:relative; z-index:1; max-width:1500px; margin:0 auto; padding:0 48px 24px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; opacity:0; animation:up 0.5s ease 0.25s both; }
     .toolbar-label { font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:0.6rem; letter-spacing:1.5px; text-transform:uppercase; margin-right:6px; }
-    .sort-btn { background:var(--surface); border:1px solid var(--border); color:var(--muted); font-family:'Barlow',sans-serif; font-size:0.78rem; font-weight:600; padding:7px 18px; border-radius:4px; cursor:pointer; transition:all 0.15s; }
+    .sort-btn { background:var(--surface); border:1px solid var(--border); color:var(--muted); font-family:'Barlow',sans-serif; font-size:0.78rem; font-weight:600; letter-spacing:0.3px; padding:7px 18px; border-radius:4px; cursor:pointer; transition:all 0.15s; }
     .sort-btn:hover { border-color:rgba(79,142,247,0.45); color:var(--text); }
     .sort-btn.active { background:rgba(79,142,247,0.15); border-color:var(--accent); color:var(--accent); }
     .result-count { margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:0.62rem; color:var(--muted); letter-spacing:1px; }
 
-    /* GRID */
     .grid-wrap { position:relative; z-index:1; max-width:1500px; margin:0 auto; padding:0 48px 32px; }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
 
-    /* CARD */
     .card { background:var(--card-bg); cursor:pointer; position:relative; transition:background 0.15s; }
     .card:hover { background:#0f1220; }
     .card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; z-index:3; background:linear-gradient(90deg,var(--accent),var(--accent2)); opacity:0; transition:opacity 0.2s; }
     .card:hover::before { opacity:1; }
+
     .card-rank { position:absolute; top:8px; left:8px; z-index:2; font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:1px; padding:2px 8px; border-radius:3px; background:rgba(7,8,15,0.75); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.12); color:var(--text); line-height:1.4; }
+
     .card-thumb-wrap { position:relative; overflow:hidden; background:var(--surface); }
     .card-thumb { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; transition:transform 0.35s ease; }
     .card:hover .card-thumb { transform:scale(1.06); }
     .card-thumb-placeholder { width:100%; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:0.55rem; color:var(--muted); letter-spacing:2px; }
+
     .card-body { padding:12px 14px 14px; }
-    .card-name { font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; line-height:1.25; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .card-name { font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; letter-spacing:0.3px; line-height:1.25; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .card-stats { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
     .stat { background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.045); border-radius:3px; padding:7px 9px; }
     .stat-label { font-family:'JetBrains Mono',monospace; font-size:0.5rem; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:1px; }
-    .stat-val { font-family:'Barlow Condensed',sans-serif; font-size:0.92rem; font-weight:700; }
+    .stat-val { font-family:'Barlow Condensed',sans-serif; font-size:0.92rem; font-weight:700; letter-spacing:0.3px; }
     .stat-val.green   { color:var(--green); }
     .stat-val.blue    { color:#6aaeff; }
     .stat-val.white   { color:var(--text); }
     .stat-val.teal    { color:var(--accent2); }
-    .stat-val.yellow  { color:#ffd166; }
-    .stat-val.pending { color:var(--muted); font-size:0.78rem; }
+    .stat-val.pending { color:var(--muted); font-size:0.78rem; animation:pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
 
-    /* PAGINATION */
     .pagination { position:relative; z-index:1; max-width:1500px; margin:0 auto; padding:0 48px 80px; display:flex; align-items:center; justify-content:center; gap:4px; flex-wrap:wrap; }
     .page-btn { min-width:38px; height:38px; padding:0 10px; background:var(--surface); border:1px solid var(--border); color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.72rem; border-radius:4px; cursor:pointer; transition:all 0.12s; display:flex; align-items:center; justify-content:center; }
     .page-btn:hover:not(:disabled) { border-color:rgba(79,142,247,0.5); color:var(--text); }
@@ -142,7 +225,6 @@
     .page-btn:disabled { opacity:0.25; cursor:not-allowed; }
     .page-ellipsis { min-width:38px; height:38px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.72rem; user-select:none; }
 
-    /* SKELETON */
     .skeleton { background:var(--card-bg); }
     .skel-thumb { width:100%; aspect-ratio:1/1; background:var(--surface); }
     .skel-body  { padding:12px 14px 14px; }
@@ -172,6 +254,7 @@
   </style>
 </head>
 <body>
+
 <div class="glow"></div>
 
 <header>
@@ -181,7 +264,7 @@
       <div class="search-input-wrap">
         <span class="search-icon">⌕</span>
         <input type="text" id="searchInput" placeholder="Search games by name…" autocomplete="off" spellcheck="false"/>
-        <button class="search-clear" id="searchClear">✕</button>
+        <button class="search-clear" id="searchClear" title="Clear">✕</button>
       </div>
       <button id="lookupBtn">🔍 Place ID</button>
     </div>
@@ -192,19 +275,18 @@
   </div>
 </header>
 
-<!-- Lookup Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <button class="modal-close" id="modalClose">✕</button>
     <div class="modal-title">Place ID Lookup</div>
     <div class="modal-sub">Find any Roblox game — even if it's not in the charts</div>
     <div class="modal-input-row">
-      <input type="text" id="placeIdInput" placeholder="Place ID or Roblox URL…" autocomplete="off"/>
+      <input type="text" id="placeIdInput" placeholder="Enter Place ID or paste Roblox URL…" autocomplete="off"/>
       <button id="placeIdSubmit">Look Up</button>
     </div>
     <div class="modal-hint">
       Find the ID in the URL: roblox.com/games/<code>286090429</code>/game-name<br/>
-      Or paste the full URL — the ID will be extracted automatically.
+      Or just paste the full URL and it'll extract the ID automatically.
     </div>
     <div class="lookup-loading" id="lookupLoading">Fetching game data…</div>
     <div class="lookup-error"  id="lookupError"></div>
@@ -231,7 +313,7 @@
 <section class="hero">
   <div class="hero-eyebrow">Real-time leaderboard</div>
   <h1>TOP ROBLOX GAMES <span class="bright">RIGHT NOW</span></h1>
-  <p class="hero-sub">Live player counts, visits, favorites &amp; like ratios — pulled from Rolimons &amp; Roblox.</p>
+  <p class="hero-sub">Live player counts, total visits, and favorites — pulled from Rolimons &amp; Roblox.</p>
 </section>
 
 <div class="stats-bar">
@@ -248,34 +330,34 @@
   <span class="result-count" id="resultCount"></span>
 </div>
 
-<div class="grid-wrap"><div class="grid" id="gameGrid"></div></div>
+<div class="grid-wrap">
+  <div class="grid" id="gameGrid"></div>
+</div>
+
 <div class="pagination" id="pagination"></div>
 
 <footer>RobloxCharts — not affiliated with Roblox Corporation · Data via Rolimons &amp; Roblox public API</footer>
 
 <script>
-  const WORKER = 'https://young-resonance-128e.frostyknight2354.workers.dev';
-  const PAGE_SIZE = 100;
-  // Max placeIds per get-details request — worker scrapes each page so keep small
-  const DETAIL_CHUNK = 10;
+  const WORKER_URL = 'https://young-resonance-128e.frostyknight2354.workers.dev';
+  const PAGE_SIZE  = 100;
 
   let currentSort  = 'TopCharts';
   let loading      = false;
   let allGames     = [];
   let visibleGames = [];
   let currentPage  = 1;
-  let detailCache  = {};      // placeId → { visits, favorites, likes, dislikes, likeRatio }
-  let detailAbort  = null;
+  let detailCache  = {};
+  let pageAbort    = null;
 
-  // ── UTILS ────────────────────────────────────────────
-  function fmt(n) {
-    if (n == null) return null;
-    n = Number(n); if (isNaN(n)) return null;
+  const fmt = n => {
+    if (n == null || isNaN(Number(n))) return null;
+    n = Number(n);
     if (n >= 1e9) return (n/1e9).toFixed(1)+'B';
     if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
     if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
     return n.toLocaleString();
-  }
+  };
   const fmtStat = n => fmt(n) ?? '—';
 
   function animateCount(el, target) {
@@ -289,257 +371,28 @@
     requestAnimationFrame(tick);
   }
 
+  async function workerFetch(params, signal) {
+    const res = await fetch(WORKER_URL+'?'+new URLSearchParams(params), { signal });
+    if (!res.ok) throw new Error(`Worker ${res.status}`);
+    return res.json();
+  }
+
   const escHtml = s => (s||'').replace(/[<>"'&]/g, c =>
     ({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c])
   );
 
   function extractPlaceId(input) {
-    input = (input||'').trim();
+    input = input.trim();
     if (/^\d+$/.test(input)) return Number(input);
     const m = input.match(/roblox\.com\/games\/(\d+)/i);
-    return m ? Number(m[1]) : null;
+    if (m) return Number(m[1]);
+    return null;
   }
 
-  async function apiFetch(params, signal) {
-    const res = await fetch(WORKER + '?' + new URLSearchParams(params), { signal });
-    if (!res.ok) throw new Error(`Worker ${res.status}`);
-    return res.json();
-  }
+  const modalOverlay = document.getElementById('modalOverlay');
 
-  // ── DETAIL FETCHING ──────────────────────────────────
-  // Sends DETAIL_CHUNK placeIds at a time so worker doesn't time out
-  async function fetchDetailsForPage(games, signal) {
-    const uncached = games.filter(g => g.placeId && !detailCache[g.placeId]);
-    if (!uncached.length) return;
-
-    for (let i = 0; i < uncached.length; i += DETAIL_CHUNK) {
-      if (signal?.aborted) return;
-      const batch = uncached.slice(i, i + DETAIL_CHUNK);
-      try {
-        const data = await apiFetch(
-          { action: 'get-details', placeIds: batch.map(g => g.placeId).join(',') },
-          signal
-        );
-        if (data.details) {
-          Object.entries(data.details).forEach(([pid, d]) => {
-            if (d) {
-              detailCache[pid] = d;
-              patchCard(pid, d);
-            }
-          });
-        }
-      } catch (err) {
-        if (err.name === 'AbortError') return;
-        console.warn('Detail fetch failed:', err.message);
-      }
-    }
-  }
-
-  // ── PATCH CARD IN-PLACE ──────────────────────────────
-  function patchCard(placeId, d) {
-    const card = document.querySelector(`.card[data-placeid="${placeId}"]`);
-    if (!card) return;
-    const set = (field, value) => {
-      const el = card.querySelector(`[data-field="${field}"]`);
-      if (!el) return;
-      el.className = el.className.replace('pending', field === 'likeRatio' ? 'yellow' : field === 'visits' ? 'blue' : field === 'favorites' ? 'teal' : 'white');
-      el.textContent = field === 'likeRatio' ? (value != null ? value + '%' : '—') : fmtStat(value);
-    };
-    set('visits',    d.visits);
-    set('favorites', d.favorites);
-    set('likeRatio', d.likeRatio);
-  }
-
-  // ── BUILD CARD ───────────────────────────────────────
-  function buildCard(g, rank) {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.dataset.placeid = g.placeId;
-
-    const name   = escHtml(g.name || 'Unknown');
-    const cached = detailCache[g.placeId];
-
-    const sv = (field, cls) => {
-      if (cached) {
-        const val = cached[field];
-        const display = field === 'likeRatio' ? (val != null ? val + '%' : '—') : fmtStat(val);
-        return `<div class="stat-val ${cls}" data-field="${field}">${display}</div>`;
-      }
-      return `<div class="stat-val pending" data-field="${field}">…</div>`;
-    };
-
-    card.innerHTML = `
-      <div class="card-thumb-wrap">
-        ${g.iconUrl
-          ? `<img class="card-thumb" src="${g.iconUrl}" alt="${name}" loading="lazy" decoding="async"/>`
-          : `<div class="card-thumb-placeholder">NO IMG</div>`}
-        <div class="card-rank">#${rank}</div>
-      </div>
-      <div class="card-body">
-        <div class="card-name" title="${name}">${name}</div>
-        <div class="card-stats">
-          <div class="stat"><div class="stat-label">Playing</div><div class="stat-val green">${fmtStat(g.playerCount)}</div></div>
-          <div class="stat"><div class="stat-label">Visits</div>${sv('visits','blue')}</div>
-          <div class="stat"><div class="stat-label">Favorites</div>${sv('favorites','teal')}</div>
-          <div class="stat"><div class="stat-label">Like Ratio</div>${sv('likeRatio','yellow')}</div>
-        </div>
-      </div>`;
-
-    card.addEventListener('click', () => window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank'));
-    return card;
-  }
-
-  // ── RENDER PAGE ──────────────────────────────────────
-  function renderPage() {
-    if (detailAbort) detailAbort.abort();
-    detailAbort = new AbortController();
-
-    const grid  = document.getElementById('gameGrid');
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const slice = visibleGames.slice(start, start + PAGE_SIZE);
-
-    if (!slice.length) {
-      grid.innerHTML = `<div class="no-results"><h3>No Results</h3><p>Try a different search term.</p></div>`;
-      document.getElementById('pagination').innerHTML = '';
-      return;
-    }
-
-    const frag = document.createDocumentFragment();
-    slice.forEach((g, i) => frag.appendChild(buildCard(g, start + i + 1)));
-    grid.innerHTML = '';
-    grid.appendChild(frag);
-
-    renderPagination();
-
-    // Fetch details for this page only, in chunks of 10
-    fetchDetailsForPage(slice, detailAbort.signal);
-  }
-
-  // ── PAGINATION ───────────────────────────────────────
-  function totalPages() { return Math.ceil(visibleGames.length / PAGE_SIZE); }
-
-  function renderPagination() {
-    const pag = document.getElementById('pagination');
-    const tp  = totalPages();
-    pag.innerHTML = '';
-    if (tp <= 1) return;
-
-    const cp = currentPage;
-    const mkBtn = (label, page) => {
-      const b = document.createElement('button');
-      b.className = 'page-btn' + (page === cp ? ' active' : '');
-      b.textContent = label;
-      b.disabled = page === null;
-      if (page && page !== cp) b.addEventListener('click', () => goToPage(page));
-      return b;
-    };
-    const dots = () => { const s = document.createElement('span'); s.className = 'page-ellipsis'; s.textContent = '…'; return s; };
-
-    const prev = mkBtn('←', cp > 1 ? cp - 1 : null);
-    prev.disabled = cp === 1;
-    pag.appendChild(prev);
-
-    const show = new Set([1, tp]);
-    for (let d = -2; d <= 2; d++) { const p = cp+d; if (p>=1&&p<=tp) show.add(p); }
-    let last = 0;
-    [...show].sort((a,b)=>a-b).forEach(p => {
-      if (p - last > 1) pag.appendChild(dots());
-      pag.appendChild(mkBtn(p, p));
-      last = p;
-    });
-
-    const next = mkBtn('→', cp < tp ? cp + 1 : null);
-    next.disabled = cp === tp;
-    pag.appendChild(next);
-  }
-
-  function goToPage(page) {
-    if (page === currentPage) return;
-    currentPage = page;
-    renderPage();
-    document.querySelector('.grid-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  // ── SET VISIBLE LIST ─────────────────────────────────
-  function setVisible(games) {
-    visibleGames = games;
-    currentPage  = 1;
-
-    const total = games.reduce((s,g) => s+(g.playerCount||0), 0);
-    animateCount(document.getElementById('totalPlaying'), total);
-    document.getElementById('gamesTracked').textContent = allGames.length.toLocaleString();
-    document.getElementById('lastUpdated').textContent  = new Date().toLocaleTimeString();
-
-    const q  = document.getElementById('searchInput').value.trim();
-    const tp = totalPages();
-    document.getElementById('resultCount').textContent = q
-      ? `${games.length.toLocaleString()} result${games.length!==1?'s':''}`
-      : `${games.length.toLocaleString()} games · ${tp} page${tp!==1?'s':''}`;
-
-    renderPage();
-  }
-
-  // ── SKELETONS ────────────────────────────────────────
-  function showSkeletons() {
-    const frag = document.createDocumentFragment();
-    for (let i = 0; i < 40; i++) {
-      const el = document.createElement('div');
-      el.className = 'skeleton';
-      el.innerHTML = `<div class="skel-thumb"></div><div class="skel-body">
-        <div class="skel-line" style="width:60%"></div>
-        <div class="skel-line" style="width:40%"></div>
-        <div class="skel-line" style="width:50%"></div></div>`;
-      frag.appendChild(el);
-    }
-    document.getElementById('gameGrid').innerHTML = '';
-    document.getElementById('gameGrid').appendChild(frag);
-    document.getElementById('pagination').innerHTML = '';
-  }
-
-  // ── SEARCH ───────────────────────────────────────────
-  function applySearch() {
-    const q = document.getElementById('searchInput').value.trim().toLowerCase();
-    document.getElementById('searchClear').classList.toggle('visible', q.length > 0);
-    if (!allGames.length) return;
-    setVisible(q ? allGames.filter(g => (g.name||'').toLowerCase().includes(q)) : allGames);
-  }
-
-  // ── MAIN LOAD ────────────────────────────────────────
-  async function load(sortName) {
-    if (loading) return;
-    loading = true;
-    detailCache = {};
-    if (detailAbort) detailAbort.abort();
-
-    document.getElementById('refreshBtn').disabled = true;
-    document.querySelectorAll('.sort-btn').forEach(b => b.disabled = true);
-    showSkeletons();
-
-    try {
-      const data = await apiFetch({ action: 'get-sort-content', sortId: sortName });
-      allGames = data.games || [];
-      if (!allGames.length) throw new Error('No games returned');
-
-      document.getElementById('searchInput').value = '';
-      document.getElementById('searchClear').classList.remove('visible');
-      setVisible(allGames);
-
-    } catch(err) {
-      console.error(err);
-      document.getElementById('gameGrid').innerHTML = `
-        <div class="error-box"><h2>Couldn't Load Games</h2><p>Something went wrong.</p><pre>${escHtml(err.message)}</pre></div>`;
-    } finally {
-      loading = false;
-      document.getElementById('refreshBtn').disabled = false;
-      document.querySelectorAll('.sort-btn').forEach(b => b.disabled = false);
-    }
-  }
-
-  // ── LOOKUP MODAL ─────────────────────────────────────
-  const overlay = document.getElementById('modalOverlay');
-  const openModal  = () => { overlay.classList.add('open'); document.getElementById('placeIdInput').focus(); };
-  const closeModal = () => { overlay.classList.remove('open'); resetLookup(); };
-
+  function openModal() { modalOverlay.classList.add('open'); document.getElementById('placeIdInput').focus(); }
+  function closeModal() { modalOverlay.classList.remove('open'); resetLookup(); }
   function resetLookup() {
     document.getElementById('lookupResult').classList.remove('visible');
     document.getElementById('lookupError').classList.remove('visible');
@@ -558,7 +411,7 @@
     resEl.classList.remove('visible');
 
     if (!placeId) {
-      errEl.textContent = 'Invalid — enter a Place ID number or paste a Roblox URL.';
+      errEl.textContent = 'Invalid input — enter a Place ID number or paste a Roblox URL.';
       errEl.classList.add('visible');
       return;
     }
@@ -567,25 +420,25 @@
     document.getElementById('placeIdSubmit').disabled = true;
 
     try {
-      const data = await apiFetch({ action: 'lookup-place', placeId });
+      const data = await workerFetch({ action: 'lookup-place', placeId });
       if (data.error) throw new Error(data.error);
-
       const g = data.game;
-      const tw = document.getElementById('lookupThumbWrap');
-      tw.innerHTML = g.iconUrl
+
+      const thumbWrap = document.getElementById('lookupThumbWrap');
+      thumbWrap.innerHTML = g.iconUrl
         ? `<img class="lookup-thumb" src="${escHtml(g.iconUrl)}" alt="${escHtml(g.name)}"/>`
         : `<div class="lookup-thumb-placeholder">NO IMG</div>`;
 
-      document.getElementById('lookupName').textContent     = g.name;
-      document.getElementById('lsPlaying').textContent      = fmtStat(g.playerCount);
-      document.getElementById('lsVisits').textContent       = fmtStat(g.visits);
-      document.getElementById('lsFavs').textContent         = fmtStat(g.favorites);
-      document.getElementById('lsLikes').textContent        = fmtStat(g.likes);
-      document.getElementById('lsDislikes').textContent     = fmtStat(g.dislikes);
-      document.getElementById('lsRatio').textContent        = g.likeRatio != null ? g.likeRatio + '%' : '—';
-      document.getElementById('lookupOpenBtn').onclick      = () => window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank');
-      resEl.classList.add('visible');
+      document.getElementById('lookupName').textContent = g.name;
+      document.getElementById('lsPlaying').textContent  = fmtStat(g.playerCount);
+      document.getElementById('lsVisits').textContent   = fmtStat(g.visits);
+      document.getElementById('lsFavs').textContent     = fmtStat(g.favorites);
+      document.getElementById('lsLikes').textContent    = fmtStat(g.likes);
+      document.getElementById('lsDislikes').textContent = fmtStat(g.dislikes);
+      document.getElementById('lsRatio').textContent    = g.likeRatio != null ? g.likeRatio+'%' : '—';
+      document.getElementById('lookupOpenBtn').onclick  = () => window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank');
 
+      resEl.classList.add('visible');
     } catch(err) {
       errEl.textContent = `Error: ${err.message}`;
       errEl.classList.add('visible');
@@ -597,12 +450,252 @@
 
   document.getElementById('lookupBtn').addEventListener('click', openModal);
   document.getElementById('modalClose').addEventListener('click', closeModal);
-  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
   document.getElementById('placeIdSubmit').addEventListener('click', doLookup);
-  document.getElementById('placeIdInput').addEventListener('keydown', e => { if (e.key==='Enter') doLookup(); if (e.key==='Escape') closeModal(); });
-  document.addEventListener('keydown', e => { if (e.key==='Escape') closeModal(); });
+  document.getElementById('placeIdInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLookup();
+    if (e.key === 'Escape') closeModal();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-  // ── EVENTS ───────────────────────────────────────────
+  function buildCard(g, rank) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.placeid = g.placeId;
+
+    const name   = escHtml(g.name || 'Unknown');
+    const detail = detailCache[g.placeId];
+    const loaded = !!detail;
+
+    const sv = (field, cls, suffix='') => {
+      const val = loaded ? detail[field] : null;
+      const display = val != null ? (suffix ? val+suffix : fmtStat(val)) : '…';
+      return `<div class="stat-val ${loaded ? cls : 'pending'}" data-field="${field}">${display}</div>`;
+    };
+
+    card.innerHTML = `
+      <div class="card-thumb-wrap">
+        ${g.iconUrl
+          ? `<img class="card-thumb" src="${g.iconUrl}" alt="${name}" loading="lazy" decoding="async"/>`
+          : `<div class="card-thumb-placeholder">NO IMG</div>`}
+        <div class="card-rank">#${rank}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name" title="${name}">${name}</div>
+        <div class="card-stats">
+          <div class="stat"><div class="stat-label">Playing</div><div class="stat-val green">${fmtStat(g.playerCount)}</div></div>
+          <div class="stat"><div class="stat-label">Visits</div>${sv('visits','blue')}</div>
+          <div class="stat"><div class="stat-label">Favorites</div>${sv('favorites','teal')}</div>
+          <div class="stat"><div class="stat-label">Like Ratio</div>${sv('likeRatio','white','%')}</div>
+        </div>
+      </div>`;
+
+    card.addEventListener('click', () => window.open(`https://www.roblox.com/games/${g.placeId}`, '_blank'));
+    return card;
+  }
+
+  function patchCardDetails(details) {
+    Object.entries(details).forEach(([placeId, d]) => {
+      if (!d) return;
+      detailCache[placeId] = d;
+      const card = document.querySelector(`.card[data-placeid="${placeId}"]`);
+      if (!card) return;
+      [['visits','blue'],['favorites','teal'],['likeRatio','white']].forEach(([field, cls]) => {
+        const el = card.querySelector(`[data-field="${field}"]`);
+        if (!el) return;
+        el.textContent = field === 'likeRatio'
+          ? (d[field] != null ? d[field]+'%' : '—')
+          : fmtStat(d[field]);
+        el.className = `stat-val ${cls}`;
+      });
+    });
+  }
+
+  async function fetchDetailsForPage(games, signal) {
+    const ids = games.map(g => g.placeId).filter(id => id && !detailCache[id]);
+    if (!ids.length) return;
+
+    for (let i = 0; i < ids.length; i += 25) {
+      if (signal?.aborted) return;
+      const batch = ids.slice(i, i + 25);
+      try {
+        const data = await workerFetch({ action: 'get-details', placeIds: batch.join(',') }, signal);
+        if (data.details) patchCardDetails(data.details);
+      } catch(err) {
+        if (err.name === 'AbortError') return;
+        console.warn('Detail batch failed:', err.message);
+      }
+    }
+  }
+
+  function totalPages() { return Math.ceil(visibleGames.length / PAGE_SIZE); }
+
+  function renderPagination() {
+    const pag = document.getElementById('pagination');
+    const tp  = totalPages();
+    pag.innerHTML = '';
+    if (tp <= 1) return;
+
+    const cp = currentPage;
+
+    const mkBtn = (label, page) => {
+      const b = document.createElement('button');
+      b.className = 'page-btn';
+      b.textContent = label;
+      if (page === cp) b.classList.add('active');
+      if (page === null) b.disabled = true;
+      else b.addEventListener('click', () => goToPage(page));
+      return b;
+    };
+
+    const ellipsis = () => {
+      const s = document.createElement('span');
+      s.className = 'page-ellipsis';
+      s.textContent = '…';
+      return s;
+    };
+
+    const prev = document.createElement('button');
+    prev.className = 'page-btn';
+    prev.textContent = '←';
+    prev.disabled = cp === 1;
+    if (cp > 1) prev.addEventListener('click', () => goToPage(cp-1));
+    pag.appendChild(prev);
+
+    const show = new Set([1, tp]);
+    for (let d = -2; d <= 2; d++) { const p = cp+d; if (p >= 1 && p <= tp) show.add(p); }
+    const pages = [...show].sort((a,b) => a-b);
+    let prev_p = 0;
+    pages.forEach(p => {
+      if (p - prev_p > 1) pag.appendChild(ellipsis());
+      pag.appendChild(mkBtn(p, p));
+      prev_p = p;
+    });
+
+    const next = document.createElement('button');
+    next.className = 'page-btn';
+    next.textContent = '→';
+    next.disabled = cp === tp;
+    if (cp < tp) next.addEventListener('click', () => goToPage(cp+1));
+    pag.appendChild(next);
+  }
+
+  function goToPage(page) {
+    if (page === currentPage) return;
+    if (pageAbort) pageAbort.abort();
+    currentPage = page;
+    renderPage();
+    document.querySelector('.grid-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function renderPage() {
+    const grid  = document.getElementById('gameGrid');
+    const start = (currentPage-1)*PAGE_SIZE;
+    const slice = visibleGames.slice(start, start+PAGE_SIZE);
+
+    if (!slice.length) {
+      grid.innerHTML = `<div class="no-results"><h3>No Results</h3><p>Try a different search term.</p></div>`;
+      document.getElementById('pagination').innerHTML = '';
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+    slice.forEach((g,i) => frag.appendChild(buildCard(g, start+i+1)));
+    grid.innerHTML = '';
+    grid.appendChild(frag);
+    renderPagination();
+
+    pageAbort = new AbortController();
+    fetchDetailsForPage(slice, pageAbort.signal);
+  }
+
+  function setVisibleGames(games) {
+    visibleGames = games;
+    currentPage  = 1;
+
+    if (!games.length) {
+      document.getElementById('gameGrid').innerHTML =
+        `<div class="no-results"><h3>No Results</h3><p>Try a different search term.</p></div>`;
+      document.getElementById('pagination').innerHTML = '';
+      document.getElementById('resultCount').textContent = '';
+      return;
+    }
+
+    const total = games.reduce((s,g) => s+(g.playerCount||0), 0);
+    animateCount(document.getElementById('totalPlaying'), total);
+    document.getElementById('gamesTracked').textContent = allGames.length.toLocaleString();
+    document.getElementById('lastUpdated').textContent  = new Date().toLocaleTimeString();
+
+    const q  = document.getElementById('searchInput').value.trim();
+    const tp = totalPages();
+    document.getElementById('resultCount').textContent = q
+      ? `${games.length.toLocaleString()} result${games.length!==1?'s':''}`
+      : `${games.length.toLocaleString()} games · ${tp} page${tp!==1?'s':''}`;
+
+    renderPage();
+  }
+
+  function showSkeletons() {
+    const grid = document.getElementById('gameGrid');
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < 40; i++) {
+      const el = document.createElement('div');
+      el.className = 'skeleton';
+      el.innerHTML = `<div class="skel-thumb"></div><div class="skel-body">
+        <div class="skel-line" style="width:60%"></div>
+        <div class="skel-line" style="width:40%"></div>
+        <div class="skel-line" style="width:50%"></div></div>`;
+      frag.appendChild(el);
+    }
+    grid.innerHTML = '';
+    grid.appendChild(frag);
+    document.getElementById('pagination').innerHTML = '';
+  }
+
+  function applySearch() {
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    document.getElementById('searchClear').classList.toggle('visible', q.length > 0);
+    if (!allGames.length) return;
+    if (pageAbort) pageAbort.abort();
+    setVisibleGames(q ? allGames.filter(g => (g.name||'').toLowerCase().includes(q)) : allGames);
+  }
+
+  async function load(sortName) {
+    if (loading) return;
+    loading = true;
+
+    if (pageAbort) pageAbort.abort();
+    detailCache = {};
+
+    document.getElementById('refreshBtn').disabled = true;
+    document.querySelectorAll('.sort-btn').forEach(b => b.disabled = true);
+    showSkeletons();
+
+    try {
+      const data = await workerFetch({ action: 'get-sort-content', sortId: sortName });
+      allGames = data.games || [];
+      if (!allGames.length) throw new Error('No games returned from Rolimons');
+
+      document.getElementById('searchInput').value = '';
+      document.getElementById('searchClear').classList.remove('visible');
+
+      setVisibleGames(allGames);
+    } catch(err) {
+      if (err.name === 'AbortError') return;
+      console.error(err);
+      document.getElementById('gameGrid').innerHTML = `
+        <div class="error-box">
+          <h2>Couldn't Load Games</h2>
+          <p>Something went wrong fetching data.</p>
+          <pre>${escHtml(err.message)}</pre>
+        </div>`;
+    } finally {
+      loading = false;
+      document.getElementById('refreshBtn').disabled = false;
+      document.querySelectorAll('.sort-btn').forEach(b => b.disabled = false);
+    }
+  }
+
   document.querySelectorAll('.sort-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       if (btn.classList.contains('active') || loading) return;
@@ -613,17 +706,21 @@
     });
   });
 
-  document.getElementById('refreshBtn').addEventListener('click', () => { if (!loading) load(currentSort); });
+  document.getElementById('refreshBtn').addEventListener('click', () => {
+    if (!loading) load(currentSort);
+  });
 
   let searchTimer;
   document.getElementById('searchInput').addEventListener('input', () => {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(applySearch, 150);
   });
+
   document.getElementById('searchClear').addEventListener('click', () => {
     document.getElementById('searchInput').value = '';
     document.getElementById('searchClear').classList.remove('visible');
-    setVisible(allGames);
+    if (pageAbort) pageAbort.abort();
+    setVisibleGames(allGames);
     document.getElementById('searchInput').focus();
   });
 
